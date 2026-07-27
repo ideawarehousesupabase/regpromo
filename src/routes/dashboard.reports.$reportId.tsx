@@ -4,11 +4,11 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ComplianceMeter, RiskBadge, StatusBadge } from "@/components/compliance-ui";
-import { reports, type ComplianceReport } from "@/data/mock";
+import { getReports, type ComplianceReport } from "@/data/mock";
 
 export const Route = createFileRoute("/dashboard/reports/$reportId")({
   loader: ({ params }): { report: ComplianceReport } => {
-    const report = reports.find((r) => r.id === params.reportId);
+    const report = getReports().find((r) => r.id === params.reportId);
     if (!report) throw notFound();
     return { report };
   },

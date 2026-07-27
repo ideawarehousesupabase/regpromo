@@ -1,10 +1,11 @@
+import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Download, FileText } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { RiskBadge, ScoreBar, StatusBadge } from "@/components/compliance-ui";
-import { reports } from "@/data/mock";
+import { getReports, type ComplianceReport } from "@/data/mock";
 
 export const Route = createFileRoute("/dashboard/reports/")({
   head: () => ({
@@ -22,6 +23,12 @@ export const Route = createFileRoute("/dashboard/reports/")({
 });
 
 function ReportsList() {
+  const [reportList, setReportList] = useState<ComplianceReport[]>(() => getReports());
+
+  useEffect(() => {
+    setReportList(getReports());
+  }, []);
+
   return (
     <div className="mx-auto w-full max-w-7xl space-y-6">
       <div>
@@ -32,7 +39,7 @@ function ReportsList() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        {reports.map((r) => (
+        {reportList.map((r) => (
           <Card key={r.id} className="border-border/70 transition-shadow hover:shadow-lg">
             <CardContent className="p-6">
               <div className="flex items-start justify-between gap-3">

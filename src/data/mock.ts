@@ -479,3 +479,76 @@ export function buildMockAnalysis(input: {
     ],
   };
 }
+
+const CAMPAIGNS_STORAGE_KEY = "regpromo_campaigns_v1";
+const REPORTS_STORAGE_KEY = "regpromo_reports_v1";
+
+export function getCampaigns(): Campaign[] {
+  if (typeof window === "undefined") return campaigns;
+  try {
+    const stored = localStorage.getItem(CAMPAIGNS_STORAGE_KEY);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch {}
+  return campaigns;
+}
+
+export function saveCampaign(newCampaign: Campaign): void {
+  const current = getCampaigns();
+  const updated = [newCampaign, ...current.filter((c) => c.id !== newCampaign.id)];
+  const idx = campaigns.findIndex((c) => c.id === newCampaign.id);
+  if (idx >= 0) {
+    campaigns[idx] = newCampaign;
+  } else {
+    campaigns.unshift(newCampaign);
+  }
+  if (typeof window !== "undefined") {
+    try {
+      localStorage.setItem(CAMPAIGNS_STORAGE_KEY, JSON.stringify(updated));
+    } catch {}
+  }
+}
+
+export function deleteCampaign(id: string): void {
+  const current = getCampaigns();
+  const updated = current.filter((c) => c.id !== id);
+  const idx = campaigns.findIndex((c) => c.id === id);
+  if (idx >= 0) {
+    campaigns.splice(idx, 1);
+  }
+  if (typeof window !== "undefined") {
+    try {
+      localStorage.setItem(CAMPAIGNS_STORAGE_KEY, JSON.stringify(updated));
+    } catch {}
+  }
+}
+
+export function getReports(): ComplianceReport[] {
+  if (typeof window === "undefined") return reports;
+  try {
+    const stored = localStorage.getItem(REPORTS_STORAGE_KEY);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch {}
+  return reports;
+}
+
+export function saveReport(newReport: ComplianceReport): void {
+  const current = getReports();
+  const updated = [newReport, ...current.filter((r) => r.id !== newReport.id)];
+  const idx = reports.findIndex((r) => r.id === newReport.id);
+  if (idx >= 0) {
+    reports[idx] = newReport;
+  } else {
+    reports.unshift(newReport);
+  }
+  if (typeof window !== "undefined") {
+    try {
+      localStorage.setItem(REPORTS_STORAGE_KEY, JSON.stringify(updated));
+    } catch {}
+  }
+}

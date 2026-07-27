@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ComplianceMeter, RiskBadge, StatusBadge } from "@/components/compliance-ui";
-import { buildMockAnalysis, INDUSTRIES, PLATFORMS } from "@/data/mock";
+import { buildMockAnalysis, INDUSTRIES, PLATFORMS, saveCampaign, saveReport } from "@/data/mock";
 
 export const Route = createFileRoute("/dashboard/campaigns/new")({
   head: () => ({
@@ -182,6 +182,25 @@ function NewCampaign() {
                 variant="outline"
                 size="lg"
                 onClick={() => {
+                  if (!form.name || !form.industry || !form.platform) {
+                    toast.error("Add a name, industry, and platform before saving as draft.");
+                    return;
+                  }
+                  const newId = `cmp-${Math.floor(1000 + Math.random() * 9000)}`;
+                  saveCampaign({
+                    id: newId,
+                    name: form.name,
+                    industry: form.industry,
+                    platform: form.platform,
+                    status: "Draft",
+                    risk: "Low",
+                    score: 0,
+                    updatedAt: new Date().toISOString().split("T")[0],
+                    description: form.description,
+                    adCopy: form.adCopy,
+                    landingPageText: form.landingPageText,
+                    disclaimer: form.disclaimer,
+                  });
                   toast.success("Campaign saved as draft.");
                   navigate({ to: "/dashboard/campaigns" });
                 }}
@@ -281,6 +300,41 @@ function NewCampaign() {
                   className="w-full"
                   variant="hero"
                   onClick={() => {
+                    const newId = `cmp-${Math.floor(1000 + Math.random() * 9000)}`;
+                    const today = new Date().toISOString().split("T")[0];
+                    saveCampaign({
+                      id: newId,
+                      name: form.name,
+                      industry: form.industry,
+                      platform: form.platform,
+                      status: result.status,
+                      risk: result.risk,
+                      score: result.score,
+                      updatedAt: today,
+                      description: form.description,
+                      adCopy: form.adCopy,
+                      landingPageText: form.landingPageText,
+                      disclaimer: form.disclaimer,
+                    });
+                    saveReport({
+                      id: `rep-${Math.floor(1000 + Math.random() * 9000)}`,
+                      campaignId: newId,
+                      campaignName: form.name,
+                      industry: form.industry,
+                      platform: form.platform,
+                      score: result.score,
+                      risk: result.risk,
+                      status: result.status,
+                      createdAt: today,
+                      breakdown: result.breakdown,
+                      issues: result.issues,
+                      recommendations: result.recommendations,
+                      timeline: [
+                        { label: "Campaign created", time: "Just now" },
+                        { label: "Compliance check run", time: "Just now" },
+                        { label: "Report generated", time: "Just now" },
+                      ],
+                    });
                     toast.success("Campaign and report saved.");
                     navigate({ to: "/dashboard/campaigns" });
                   }}

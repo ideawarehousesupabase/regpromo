@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   Activity,
@@ -21,7 +22,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { RiskBadge, StatusBadge } from "@/components/compliance-ui";
-import { campaigns, dashboardStats, recentActivity, reports, scoreTrend } from "@/data/mock";
+import { dashboardStats, getCampaigns, getReports, recentActivity, scoreTrend, type Campaign, type ComplianceReport } from "@/data/mock";
 import { useSession } from "@/hooks/use-session";
 
 export const Route = createFileRoute("/dashboard/")({
@@ -41,29 +42,45 @@ export const Route = createFileRoute("/dashboard/")({
 
 function DashboardHome() {
   const { user } = useSession();
+  const [campaignList, setCampaignList] = useState<Campaign[]>(() => getCampaigns());
+  const [reportList, setReportList] = useState<ComplianceReport[]>(() => getReports());
+
+  useEffect(() => {
+    setCampaignList(getCampaigns());
+    setReportList(getReports());
+  }, []);
+
+  const total = campaignList.length;
+  const approved = campaignList.filter((c) => c.status === "Approved").length;
+  const pending = campaignList.filter((c) => c.status === "Pending Review").length;
+  const highRisk = campaignList.filter((c) => c.risk === "High").length;
+  const avgScore =
+    total > 0
+      ? Math.round(campaignList.reduce((acc, c) => acc + (c.score || 0), 0) / total)
+      : dashboardStats.averageScore;
 
   const stats = [
     {
       label: "Total Campaigns",
-      value: dashboardStats.totalCampaigns,
+      value: total,
       icon: Megaphone,
       note: "across all channels",
     },
     {
       label: "Approved Campaigns",
-      value: dashboardStats.approvedCampaigns,
+      value: approved,
       icon: CheckCircle2,
       note: "cleared to publish",
     },
     {
       label: "Pending Review",
-      value: dashboardStats.pendingReview,
+      value: pending,
       icon: Clock,
       note: "awaiting sign-off",
     },
     {
       label: "High Risk Campaigns",
-      value: dashboardStats.highRisk,
+      value: highRisk,
       icon: AlertTriangle,
       note: "need revision now",
     },
@@ -111,7 +128,7 @@ function DashboardHome() {
               <div>
                 <h2 className="font-display text-lg font-semibold">Average compliance score</h2>
                 <p className="text-sm text-muted-foreground">
-                  Trending up — currently {dashboardStats.averageScore}%
+                  Trending up — currently {avgScore}%
                 </p>
               </div>
               <span className="inline-flex items-center gap-1 rounded-full bg-success/12 px-2.5 py-1 text-xs font-semibold text-success">
@@ -185,7 +202,7 @@ function DashboardHome() {
               </Link>
             </div>
             <ul className="mt-4 divide-y divide-border/60">
-              {campaigns.slice(0, 5).map((c) => (
+              {campaignList.slice(0, 5).map((c) => (
                 <li key={c.id} className="flex items-center justify-between gap-3 py-3">
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium">{c.name}</p>
@@ -215,7 +232,7 @@ function DashboardHome() {
               </Link>
             </div>
             <ul className="mt-4 divide-y divide-border/60">
-              {reports.map((r) => (
+              {reportList.slice(0, 5).map((r) => (
                 <li key={r.id} className="flex items-center justify-between gap-3 py-3">
                   <div className="flex min-w-0 items-center gap-3">
                     <FileText className="size-4 shrink-0 text-muted-foreground" />

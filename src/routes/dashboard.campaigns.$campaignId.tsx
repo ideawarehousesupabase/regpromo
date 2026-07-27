@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, FileText, Save } from "lucide-react";
 import { toast } from "sonner";
@@ -8,16 +8,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ComplianceMeter, RiskBadge, StatusBadge } from "@/components/compliance-ui";
-import { campaigns, reports, type Campaign, type ComplianceReport } from "@/data/mock";
+import { getCampaigns, getReports, saveCampaign, type Campaign, type ComplianceReport } from "@/data/mock";
 
 export const Route = createFileRoute("/dashboard/campaigns/$campaignId")({
   validateSearch: (search: Record<string, unknown>) => ({
     edit: search.edit === true || search.edit === "true",
   }),
   loader: ({ params }) => {
-    const campaign = campaigns.find((c) => c.id === params.campaignId);
+    const campaign = getCampaigns().find((c) => c.id === params.campaignId);
     if (!campaign) throw notFound();
-    return { campaign, report: reports.find((r) => r.campaignId === campaign.id) ?? null };
+    return { campaign, report: getReports().find((r) => r.campaignId === campaign.id) ?? null };
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
@@ -43,6 +43,10 @@ function CampaignDetail() {
   const { edit } = Route.useSearch();
   const navigate = useNavigate();
   const [draft, setDraft] = useState(campaign);
+
+  useEffect(() => {
+    setDraft(campaign);
+  }, [campaign]);
 
   return (
     <div className="mx-auto w-full max-w-6xl space-y-6">
@@ -108,6 +112,12 @@ function CampaignDetail() {
                 <Button
                   variant="hero"
                   onClick={() => {
+                    const updated = {
+                      ...campaign,
+                      ...draft,
+                      updatedAt: new Date().toISOString().split("T")[0],
+                    };
+                    saveCampaign(updated);
                     toast.success("Campaign updated.");
                     navigate({ to: "/dashboard/campaigns/$campaignId", params: { campaignId: campaign.id }, search: { edit: false } });
                   }}

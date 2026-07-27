@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Eye, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import { toast } from "sonner";
@@ -21,7 +21,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { RiskBadge, ScoreBar, StatusBadge } from "@/components/compliance-ui";
-import { campaigns as seedCampaigns, INDUSTRIES } from "@/data/mock";
+import { deleteCampaign, getCampaigns, INDUSTRIES } from "@/data/mock";
 
 export const Route = createFileRoute("/dashboard/campaigns/")({
   head: () => ({
@@ -39,7 +39,11 @@ export const Route = createFileRoute("/dashboard/campaigns/")({
 });
 
 function CampaignList() {
-  const [rows, setRows] = useState(seedCampaigns);
+  const [rows, setRows] = useState(() => getCampaigns());
+
+  useEffect(() => {
+    setRows(getCampaigns());
+  }, []);
   const [q, setQ] = useState("");
   const [industry, setIndustry] = useState("all");
 
@@ -156,7 +160,8 @@ function CampaignList() {
                           size="icon"
                           title="Delete"
                           onClick={() => {
-                            setRows((r) => r.filter((x) => x.id !== c.id));
+                            deleteCampaign(c.id);
+                            setRows(getCampaigns());
                             toast.success(`${c.name} deleted.`);
                           }}
                         >
