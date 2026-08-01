@@ -26,12 +26,12 @@ import { deleteCampaign, getCampaigns, INDUSTRIES } from "@/data/mock";
 export const Route = createFileRoute("/dashboard/campaigns/")({
   head: () => ({
     meta: [
-      { title: "Campaigns — RegPromo Lens" },
+      { title: "Campaigns — ComplyStep" },
       {
         name: "description",
         content: "All marketing campaigns with industry, platform, status, risk level and compliance score.",
       },
-      { property: "og:title", content: "Campaigns — RegPromo Lens" },
+      { property: "og:title", content: "Campaigns — ComplyStep" },
       { property: "og:description", content: "Manage and review every regulated campaign in one table." },
     ],
   }),

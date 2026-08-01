@@ -9,13 +9,13 @@ import { Label } from "@/components/ui/label";
 export const Route = createFileRoute("/forgot-password")({
   head: () => ({
     meta: [
-      { title: "Reset Your Password — RegPromo Lens" },
+      { title: "Reset Your Password — ComplyStep" },
       {
         name: "description",
-        content: "Request a password reset link for your RegPromo Lens workspace account.",
+        content: "Request a password reset link for your ComplyStep workspace account.",
       },
-      { property: "og:title", content: "Reset Your Password — RegPromo Lens" },
-      { property: "og:description", content: "Password recovery for RegPromo Lens accounts." },
+      { property: "og:title", content: "Reset Your Password — ComplyStep" },
+      { property: "og:description", content: "Password recovery for ComplyStep accounts." },
     ],
   }),
   component: ForgotPasswordPage,

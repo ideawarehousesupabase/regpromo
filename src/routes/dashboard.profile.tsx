@@ -12,12 +12,12 @@ import { changePassword, isFirebaseConfigured, updateProfile } from "@/lib/auth"
 export const Route = createFileRoute("/dashboard/profile")({
   head: () => ({
     meta: [
-      { title: "Profile — RegPromo Lens" },
+      { title: "Profile — ComplyStep" },
       {
         name: "description",
-        content: "Manage your RegPromo Lens account details, company name and password.",
+        content: "Manage your ComplyStep account details, company name and password.",
       },
-      { property: "og:title", content: "Profile — RegPromo Lens" },
+      { property: "og:title", content: "Profile — ComplyStep" },
       { property: "og:description", content: "Manage your account details and password." },
     ],
   }),

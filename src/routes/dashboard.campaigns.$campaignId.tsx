@@ -22,10 +22,10 @@ export const Route = createFileRoute("/dashboard/campaigns/$campaignId")({
   head: ({ loaderData }) => {
     if (!loaderData) {
       return {
-        meta: [{ title: "Campaign unavailable — RegPromo Lens" }, { name: "robots", content: "noindex" }],
+        meta: [{ title: "Campaign unavailable — ComplyStep" }, { name: "robots", content: "noindex" }],
       };
     }
-    const title = `${loaderData.campaign.name} — RegPromo Lens`;
+    const title = `${loaderData.campaign.name} — ComplyStep`;
     return {
       meta: [
         { title },

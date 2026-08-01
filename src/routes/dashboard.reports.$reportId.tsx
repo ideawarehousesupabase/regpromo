@@ -17,12 +17,12 @@ export const Route = createFileRoute("/dashboard/reports/$reportId")({
     if (!loaderData) {
       return {
         meta: [
-          { title: "Report unavailable — RegPromo Lens" },
+          { title: "Report unavailable — ComplyStep" },
           { name: "robots", content: "noindex" },
         ],
       };
     }
-    const title = `${loaderData.report.campaignName} report — RegPromo Lens`;
+    const title = `${loaderData.report.campaignName} report — ComplyStep`;
     const description = `Compliance report ${loaderData.report.id}: ${loaderData.report.score}% score, ${loaderData.report.risk.toLowerCase()} risk.`;
     return {
       meta: [

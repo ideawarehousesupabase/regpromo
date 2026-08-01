@@ -10,12 +10,12 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/dashboard/notifications")({
   head: () => ({
     meta: [
-      { title: "Notifications — RegPromo Lens" },
+      { title: "Notifications — ComplyStep" },
       {
         name: "description",
         content: "Approval alerts, generated reports and compliance score changes across your campaigns.",
       },
-      { property: "og:title", content: "Notifications — RegPromo Lens" },
+      { property: "og:title", content: "Notifications — ComplyStep" },
       { property: "og:description", content: "Stay on top of compliance changes as they happen." },
     ],
   }),

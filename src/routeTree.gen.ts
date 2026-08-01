@@ -11,12 +11,14 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as BlogRouteImport } from './routes/blog'
+import { Route as CasestudyRouteImport } from './routes/casestudy'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DashboardRouteImport } from './routes/dashboard'
-import { Route as FeaturesRouteImport } from './routes/features'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as IndustriesRouteImport } from './routes/industries'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as ProductsRouteImport } from './routes/products'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
@@ -38,6 +40,16 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CasestudyRoute = CasestudyRouteImport.update({
+  id: '/casestudy',
+  path: '/casestudy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
@@ -48,14 +60,14 @@ const DashboardRoute = DashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
-const FeaturesRoute = FeaturesRouteImport.update({
-  id: '/features',
-  path: '/features',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
   id: '/forgot-password',
   path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndustriesRoute = IndustriesRouteImport.update({
+  id: '/industries',
+  path: '/industries',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -63,9 +75,9 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PricingRoute = PricingRouteImport.update({
-  id: '/pricing',
-  path: '/pricing',
+const ProductsRoute = ProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SignupRoute = SignupRouteImport.update({
@@ -124,12 +136,14 @@ const DashboardReportsReportIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/blog': typeof BlogRoute
+  '/casestudy': typeof CasestudyRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRouteWithChildren
-  '/features': typeof FeaturesRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/industries': typeof IndustriesRoute
   '/login': typeof LoginRoute
-  '/pricing': typeof PricingRoute
+  '/products': typeof ProductsRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dashboard/notifications': typeof DashboardNotificationsRoute
@@ -144,11 +158,13 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/blog': typeof BlogRoute
+  '/casestudy': typeof CasestudyRoute
   '/contact': typeof ContactRoute
-  '/features': typeof FeaturesRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/industries': typeof IndustriesRoute
   '/login': typeof LoginRoute
-  '/pricing': typeof PricingRoute
+  '/products': typeof ProductsRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dashboard/notifications': typeof DashboardNotificationsRoute
@@ -164,12 +180,14 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/blog': typeof BlogRoute
+  '/casestudy': typeof CasestudyRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRouteWithChildren
-  '/features': typeof FeaturesRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/industries': typeof IndustriesRoute
   '/login': typeof LoginRoute
-  '/pricing': typeof PricingRoute
+  '/products': typeof ProductsRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dashboard/notifications': typeof DashboardNotificationsRoute
@@ -186,12 +204,14 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/blog'
+    | '/casestudy'
     | '/contact'
     | '/dashboard'
-    | '/features'
     | '/forgot-password'
+    | '/industries'
     | '/login'
-    | '/pricing'
+    | '/products'
     | '/signup'
     | '/sitemap.xml'
     | '/dashboard/notifications'
@@ -206,11 +226,13 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/blog'
+    | '/casestudy'
     | '/contact'
-    | '/features'
     | '/forgot-password'
+    | '/industries'
     | '/login'
-    | '/pricing'
+    | '/products'
     | '/signup'
     | '/sitemap.xml'
     | '/dashboard/notifications'
@@ -225,12 +247,14 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/blog'
+    | '/casestudy'
     | '/contact'
     | '/dashboard'
-    | '/features'
     | '/forgot-password'
+    | '/industries'
     | '/login'
-    | '/pricing'
+    | '/products'
     | '/signup'
     | '/sitemap.xml'
     | '/dashboard/notifications'
@@ -246,12 +270,14 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  BlogRoute: typeof BlogRoute
+  CasestudyRoute: typeof CasestudyRoute
   ContactRoute: typeof ContactRoute
   DashboardRoute: typeof DashboardRouteWithChildren
-  FeaturesRoute: typeof FeaturesRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
+  IndustriesRoute: typeof IndustriesRoute
   LoginRoute: typeof LoginRoute
-  PricingRoute: typeof PricingRoute
+  ProductsRoute: typeof ProductsRoute
   SignupRoute: typeof SignupRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
@@ -272,6 +298,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/casestudy': {
+      id: '/casestudy'
+      path: '/casestudy'
+      fullPath: '/casestudy'
+      preLoaderRoute: typeof CasestudyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contact': {
       id: '/contact'
       path: '/contact'
@@ -286,18 +326,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/features': {
-      id: '/features'
-      path: '/features'
-      fullPath: '/features'
-      preLoaderRoute: typeof FeaturesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/forgot-password': {
       id: '/forgot-password'
       path: '/forgot-password'
       fullPath: '/forgot-password'
       preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/industries': {
+      id: '/industries'
+      path: '/industries'
+      fullPath: '/industries'
+      preLoaderRoute: typeof IndustriesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -307,11 +347,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pricing': {
-      id: '/pricing'
-      path: '/pricing'
-      fullPath: '/pricing'
-      preLoaderRoute: typeof PricingRouteImport
+    '/products': {
+      id: '/products'
+      path: '/products'
+      fullPath: '/products'
+      preLoaderRoute: typeof ProductsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/signup': {
@@ -416,12 +456,14 @@ const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  BlogRoute: BlogRoute,
+  CasestudyRoute: CasestudyRoute,
   ContactRoute: ContactRoute,
   DashboardRoute: DashboardRouteWithChildren,
-  FeaturesRoute: FeaturesRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
+  IndustriesRoute: IndustriesRoute,
   LoginRoute: LoginRoute,
-  PricingRoute: PricingRoute,
+  ProductsRoute: ProductsRoute,
   SignupRoute: SignupRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
 }

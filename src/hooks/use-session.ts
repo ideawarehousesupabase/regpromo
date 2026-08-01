@@ -11,10 +11,10 @@ export function useSession() {
     const sync = () => setUser(getSession());
     sync();
     setReady(true);
-    window.addEventListener("regpromo:session", sync);
+    window.addEventListener("complystep:session", sync);
     window.addEventListener("storage", sync);
     return () => {
-      window.removeEventListener("regpromo:session", sync);
+      window.removeEventListener("complystep:session", sync);
       window.removeEventListener("storage", sync);
     };
   }, []);

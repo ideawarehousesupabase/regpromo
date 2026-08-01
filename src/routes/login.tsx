@@ -11,13 +11,13 @@ import { login } from "@/lib/auth";
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
-      { title: "Log In — RegPromo Lens" },
+      { title: "Log In — ComplyStep" },
       {
         name: "description",
         content:
-          "Log in to your RegPromo Lens workspace to review campaigns, compliance reports and risk insights.",
+          "Log in to your ComplyStep workspace to review campaigns, compliance reports and risk insights.",
       },
-      { property: "og:title", content: "Log In — RegPromo Lens" },
+      { property: "og:title", content: "Log In — ComplyStep" },
       {
         property: "og:description",
         content: "Access your campaign compliance dashboard.",

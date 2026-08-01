@@ -10,12 +10,12 @@ import { getReports, type ComplianceReport } from "@/data/mock";
 export const Route = createFileRoute("/dashboard/reports/")({
   head: () => ({
     meta: [
-      { title: "Compliance Reports — RegPromo Lens" },
+      { title: "Compliance Reports — ComplyStep" },
       {
         name: "description",
         content: "Every generated compliance report with score, risk level and audit-ready history.",
       },
-      { property: "og:title", content: "Compliance Reports — RegPromo Lens" },
+      { property: "og:title", content: "Compliance Reports — ComplyStep" },
       { property: "og:description", content: "Audit-ready compliance reports for your campaigns." },
     ],
   }),

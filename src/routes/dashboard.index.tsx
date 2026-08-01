@@ -28,12 +28,12 @@ import { useSession } from "@/hooks/use-session";
 export const Route = createFileRoute("/dashboard/")({
   head: () => ({
     meta: [
-      { title: "Dashboard — RegPromo Lens" },
+      { title: "Dashboard — ComplyStep" },
       {
         name: "description",
         content: "Campaign compliance overview: totals, approvals, pending reviews and high-risk campaigns.",
       },
-      { property: "og:title", content: "Dashboard — RegPromo Lens" },
+      { property: "og:title", content: "Dashboard — ComplyStep" },
       { property: "og:description", content: "Your campaign compliance overview." },
     ],
   }),

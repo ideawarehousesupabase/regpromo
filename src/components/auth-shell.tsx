@@ -18,7 +18,7 @@ export function AuthShell({
       <div className="hidden flex-col justify-between bg-brand-gradient p-12 lg:flex">
         <div className="text-primary-foreground">
           <Link to="/" className="font-display text-lg font-semibold">
-            RegPromo Lens
+            ComplyStep
           </Link>
         </div>
         <div className="max-w-md text-primary-foreground">

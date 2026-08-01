@@ -12,13 +12,13 @@ import { signUp } from "@/lib/auth";
 export const Route = createFileRoute("/signup")({
   head: () => ({
     meta: [
-      { title: "Create Your RegPromo Lens Account" },
+      { title: "Create Your ComplyStep Account" },
       {
         name: "description",
         content:
-          "Sign up for RegPromo Lens to run AI-assisted compliance checks on your regulated marketing campaigns.",
+          "Sign up for ComplyStep to run AI-assisted compliance checks on your regulated marketing campaigns.",
       },
-      { property: "og:title", content: "Create Your RegPromo Lens Account" },
+      { property: "og:title", content: "Create Your ComplyStep Account" },
       {
         property: "og:description",
         content: "Create an account and run your first campaign compliance check.",
@@ -69,7 +69,7 @@ function SignupPage() {
     setLoading(true);
     try {
       await signUp(parsed.data);
-      toast.success("Account created. Welcome to RegPromo Lens.");
+      toast.success("Account created. Welcome to ComplyStep.");
       navigate({ to: "/dashboard" });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Could not create account.");

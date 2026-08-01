@@ -480,8 +480,8 @@ export function buildMockAnalysis(input: {
   };
 }
 
-const CAMPAIGNS_STORAGE_KEY = "regpromo_campaigns_v1";
-const REPORTS_STORAGE_KEY = "regpromo_reports_v1";
+const CAMPAIGNS_STORAGE_KEY = "complystep_campaigns_v1";
+const REPORTS_STORAGE_KEY = "complystep_reports_v1";
 
 export function getCampaigns(): Campaign[] {
   if (typeof window === "undefined") return campaigns;

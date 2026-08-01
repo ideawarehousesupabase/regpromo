@@ -20,12 +20,12 @@ import { buildMockAnalysis, INDUSTRIES, PLATFORMS, saveCampaign, saveReport } fr
 export const Route = createFileRoute("/dashboard/campaigns/new")({
   head: () => ({
     meta: [
-      { title: "New Campaign — RegPromo Lens" },
+      { title: "New Campaign — ComplyStep" },
       {
         name: "description",
         content: "Create a campaign and run a simulated AI compliance check on its ad copy and disclaimers.",
       },
-      { property: "og:title", content: "New Campaign — RegPromo Lens" },
+      { property: "og:title", content: "New Campaign — ComplyStep" },
       { property: "og:description", content: "Draft a campaign and scan it for compliance risk." },
     ],
   }),

@@ -7,9 +7,11 @@ import { useSession } from "@/hooks/use-session";
 
 const links = [
   { to: "/", label: "Home" },
-  { to: "/features", label: "Features" },
-  { to: "/pricing", label: "Pricing" },
-  { to: "/about", label: "About" },
+  { to: "/about", label: "About Us" },
+  { to: "/products", label: "Products" },
+  { to: "/industries", label: "Industries" },
+  { to: "/casestudy", label: "Case Study" },
+  { to: "/blog", label: "Blog" },
   { to: "/contact", label: "Contact" },
 ] as const;
 

@@ -27,12 +27,12 @@ export interface SessionUser {
 }
 
 const USERS = "users";
-const SESSION_KEY = "regpromo.session";
-const LOCAL_USERS_KEY = "regpromo.users";
+const SESSION_KEY = "complystep.session";
+const LOCAL_USERS_KEY = "complystep.users";
 
 /* ---------------------------------- hashing --------------------------------- */
 
-const SALT = "regpromo-lens-v1";
+const SALT = "complystep-v1";
 
 export async function hashPassword(password: string): Promise<string> {
   const data = new TextEncoder().encode(`${SALT}:${password}`);
@@ -158,7 +158,7 @@ export async function changePassword(
 
 export function saveSession(user: SessionUser) {
   localStorage.setItem(SESSION_KEY, JSON.stringify(user));
-  window.dispatchEvent(new Event("regpromo:session"));
+  window.dispatchEvent(new Event("complystep:session"));
 }
 
 export function getSession(): SessionUser | null {
@@ -173,7 +173,7 @@ export function getSession(): SessionUser | null {
 
 export function logout() {
   localStorage.removeItem(SESSION_KEY);
-  window.dispatchEvent(new Event("regpromo:session"));
+  window.dispatchEvent(new Event("complystep:session"));
 }
 
 export { isFirebaseConfigured };
