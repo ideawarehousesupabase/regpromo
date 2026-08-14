@@ -81,7 +81,7 @@ function Profile() {
         <h1 className="text-2xl font-bold sm:text-3xl">Profile</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Account details are stored in the {isFirebaseConfigured ? "Firestore" : "local demo"}{" "}
-          users collection with a SHA-256 hashed password.
+          users collection. Your password is managed securely by Firebase Authentication.
         </p>
       </div>
 
@@ -169,8 +169,8 @@ function Profile() {
               {savingPw && <Loader2 className="animate-spin" />} Update password
             </Button>
             <p className="flex items-center gap-2 text-xs text-muted-foreground">
-              <ShieldCheck className="size-3.5" /> Passwords are hashed before storage — never kept
-              in plain text.
+              <ShieldCheck className="size-3.5" /> Managed by Firebase Authentication — we never see
+              or store your password.
             </p>
           </CardContent>
         </Card>

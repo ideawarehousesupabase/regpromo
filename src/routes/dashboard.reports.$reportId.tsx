@@ -3,7 +3,7 @@ import { ArrowLeft, CheckCircle2, Download, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ComplianceMeter, RiskBadge, StatusBadge } from "@/components/compliance-ui";
+import { ComplianceMeter, RiskBadge } from "@/components/compliance-ui";
 import { getReports, type ComplianceReport } from "@/data/mock";
 
 export const Route = createFileRoute("/dashboard/reports/$reportId")({
@@ -53,7 +53,10 @@ function ReportDetail() {
           </p>
         </div>
         <div className="ml-auto flex gap-2">
-          <Button variant="outline" onClick={() => toast.success("Report link copied (demo only).")}>
+          <Button
+            variant="outline"
+            onClick={() => toast.success("Report link copied (demo only).")}
+          >
             <Share2 /> Share
           </Button>
           <Button variant="hero" onClick={() => toast.success("PDF export queued (demo only).")}>
@@ -68,7 +71,6 @@ function ReportDetail() {
             <ComplianceMeter score={report.score} risk={report.risk} />
             <div className="mt-4 flex justify-center gap-2">
               <RiskBadge risk={report.risk} />
-              <StatusBadge status={report.status} />
             </div>
             <div className="mt-6 space-y-3">
               {report.breakdown.map((b) => (
@@ -87,7 +89,10 @@ function ReportDetail() {
               ))}
             </div>
             <Button asChild variant="outline" className="mt-6 w-full">
-              <Link to="/dashboard/campaigns/$campaignId" params={{ campaignId: report.campaignId }}>
+              <Link
+                to="/dashboard/campaigns/$campaignId"
+                params={{ campaignId: report.campaignId }}
+              >
                 View campaign
               </Link>
             </Button>
@@ -99,6 +104,9 @@ function ReportDetail() {
             <CardContent className="p-6">
               <h2 className="font-display text-lg font-semibold">Flagged issues</h2>
               <ul className="mt-4 space-y-3">
+                {report.issues.length === 0 && (
+                  <li className="text-sm text-muted-foreground">No issues detected.</li>
+                )}
                 {report.issues.map((i) => (
                   <li key={i.id} className="rounded-xl border border-border/70 p-4">
                     <div className="flex items-start justify-between gap-3">
@@ -106,6 +114,18 @@ function ReportDetail() {
                       <RiskBadge risk={i.severity} />
                     </div>
                     <p className="mt-1 text-sm text-muted-foreground">{i.detail}</p>
+                    {i.matched && (
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        Matched: <span className="font-mono">&ldquo;{i.matched}&rdquo;</span>
+                      </p>
+                    )}
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      {i.category} · −{i.impact} pts
+                    </p>
+                    <p className="mt-2 text-sm">
+                      <span className="font-medium">Recommendation: </span>
+                      <span className="text-muted-foreground">{i.recommendation}</span>
+                    </p>
                     <p className="mt-2 text-xs font-semibold text-primary">{i.clause}</p>
                   </li>
                 ))}

@@ -1,12 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import {
-  Bell,
-  FileText,
-  LayoutDashboard,
-  LogOut,
-  Megaphone,
-  UserRound,
-} from "lucide-react";
+import { Bell, FileText, LayoutDashboard, LogOut, Megaphone, Plug, UserRound } from "lucide-react";
 import { Logo } from "./logo";
 import {
   Sidebar,
@@ -23,11 +16,11 @@ import {
 const items: { title: string; url: string; icon: typeof Bell; exact?: boolean }[] = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, exact: true },
   { title: "Campaigns", url: "/dashboard/campaigns", icon: Megaphone },
+  { title: "Integrations", url: "/dashboard/integrations", icon: Plug },
   { title: "Compliance Reports", url: "/dashboard/reports", icon: FileText },
   { title: "Notifications", url: "/dashboard/notifications", icon: Bell },
   { title: "Profile", url: "/dashboard/profile", icon: UserRound },
 ];
-
 
 export function AppSidebar({ onLogout }: { onLogout: () => void }) {
   const pathname = useRouterState({ select: (r) => r.location.pathname });

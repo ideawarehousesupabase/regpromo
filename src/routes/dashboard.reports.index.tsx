@@ -4,7 +4,7 @@ import { Download, FileText } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { RiskBadge, ScoreBar, StatusBadge } from "@/components/compliance-ui";
+import { RiskBadge, ScoreBar } from "@/components/compliance-ui";
 import { getReports, type ComplianceReport } from "@/data/mock";
 
 export const Route = createFileRoute("/dashboard/reports/")({
@@ -13,7 +13,8 @@ export const Route = createFileRoute("/dashboard/reports/")({
       { title: "Compliance Reports — ComplyStep" },
       {
         name: "description",
-        content: "Every generated compliance report with score, risk level and audit-ready history.",
+        content:
+          "Every generated compliance report with score, risk level and audit-ready history.",
       },
       { property: "og:title", content: "Compliance Reports — ComplyStep" },
       { property: "og:description", content: "Audit-ready compliance reports for your campaigns." },
@@ -59,7 +60,9 @@ function ReportsList() {
 
               <div className="mt-5 flex items-center justify-between gap-3">
                 <ScoreBar score={r.score} />
-                <StatusBadge status={r.status} />
+                <span className="text-xs text-muted-foreground">
+                  {r.issues.length} {r.issues.length === 1 ? "issue" : "issues"}
+                </span>
               </div>
 
               <div className="mt-5 flex gap-2">

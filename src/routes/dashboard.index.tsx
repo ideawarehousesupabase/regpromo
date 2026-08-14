@@ -4,11 +4,11 @@ import {
   Activity,
   AlertTriangle,
   ArrowUpRight,
-  CheckCircle2,
-  Clock,
   FileText,
   Megaphone,
   Plus,
+  ShieldAlert,
+  ShieldCheck,
 } from "lucide-react";
 import {
   Area,
@@ -21,8 +21,16 @@ import {
 } from "recharts";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { RiskBadge, StatusBadge } from "@/components/compliance-ui";
-import { dashboardStats, getCampaigns, getReports, recentActivity, scoreTrend, type Campaign, type ComplianceReport } from "@/data/mock";
+import { RiskBadge } from "@/components/compliance-ui";
+import {
+  dashboardStats,
+  getCampaigns,
+  getReports,
+  recentActivity,
+  scoreTrend,
+  type Campaign,
+  type ComplianceReport,
+} from "@/data/mock";
 import { useSession } from "@/hooks/use-session";
 
 export const Route = createFileRoute("/dashboard/")({
@@ -31,7 +39,7 @@ export const Route = createFileRoute("/dashboard/")({
       { title: "Dashboard — ComplyStep" },
       {
         name: "description",
-        content: "Campaign compliance overview: totals, approvals, pending reviews and high-risk campaigns.",
+        content: "Campaign compliance overview: totals, risk levels and average compliance score.",
       },
       { property: "og:title", content: "Dashboard — ComplyStep" },
       { property: "og:description", content: "Your campaign compliance overview." },
@@ -51,9 +59,9 @@ function DashboardHome() {
   }, []);
 
   const total = campaignList.length;
-  const approved = campaignList.filter((c) => c.status === "Approved").length;
-  const pending = campaignList.filter((c) => c.status === "Pending Review").length;
+  const lowRisk = campaignList.filter((c) => c.risk === "Low").length;
   const highRisk = campaignList.filter((c) => c.risk === "High").length;
+  const criticalRisk = campaignList.filter((c) => c.risk === "Critical").length;
   const avgScore =
     total > 0
       ? Math.round(campaignList.reduce((acc, c) => acc + (c.score || 0), 0) / total)
@@ -67,22 +75,22 @@ function DashboardHome() {
       note: "across all channels",
     },
     {
-      label: "Approved Campaigns",
-      value: approved,
-      icon: CheckCircle2,
-      note: "cleared to publish",
-    },
-    {
-      label: "Pending Review",
-      value: pending,
-      icon: Clock,
-      note: "awaiting sign-off",
+      label: "Low Risk Campaigns",
+      value: lowRisk,
+      icon: ShieldCheck,
+      note: "scoring 90 and above",
     },
     {
       label: "High Risk Campaigns",
       value: highRisk,
       icon: AlertTriangle,
-      note: "need revision now",
+      note: "scoring 60–74",
+    },
+    {
+      label: "Critical Risk Campaigns",
+      value: criticalRisk,
+      icon: ShieldAlert,
+      note: "scoring below 60",
     },
   ];
 
@@ -127,9 +135,7 @@ function DashboardHome() {
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="font-display text-lg font-semibold">Average compliance score</h2>
-                <p className="text-sm text-muted-foreground">
-                  Trending up — currently {avgScore}%
-                </p>
+                <p className="text-sm text-muted-foreground">Trending up — currently {avgScore}%</p>
               </div>
               <span className="inline-flex items-center gap-1 rounded-full bg-success/12 px-2.5 py-1 text-xs font-semibold text-success">
                 <ArrowUpRight className="size-3" /> +21 pts
@@ -212,7 +218,7 @@ function DashboardHome() {
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
                     <RiskBadge risk={c.risk} />
-                    <StatusBadge status={c.status} />
+                    <span className="text-sm font-semibold">{c.score}%</span>
                   </div>
                 </li>
               ))}

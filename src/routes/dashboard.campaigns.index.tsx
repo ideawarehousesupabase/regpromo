@@ -20,7 +20,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { RiskBadge, ScoreBar, StatusBadge } from "@/components/compliance-ui";
+import { RiskBadge, ScoreBar } from "@/components/compliance-ui";
 import { deleteCampaign, getCampaigns, INDUSTRIES } from "@/data/mock";
 
 export const Route = createFileRoute("/dashboard/campaigns/")({
@@ -29,10 +29,14 @@ export const Route = createFileRoute("/dashboard/campaigns/")({
       { title: "Campaigns — ComplyStep" },
       {
         name: "description",
-        content: "All marketing campaigns with industry, platform, status, risk level and compliance score.",
+        content:
+          "All marketing campaigns with industry, platform, risk level and compliance score.",
       },
       { property: "og:title", content: "Campaigns — ComplyStep" },
-      { property: "og:description", content: "Manage and review every regulated campaign in one table." },
+      {
+        property: "og:description",
+        content: "Manage and review every regulated campaign in one table.",
+      },
     ],
   }),
   component: CampaignList,
@@ -107,7 +111,6 @@ function CampaignList() {
                   <TableHead>Campaign</TableHead>
                   <TableHead>Industry</TableHead>
                   <TableHead>Platform</TableHead>
-                  <TableHead>Status</TableHead>
                   <TableHead>Risk</TableHead>
                   <TableHead>Compliance Score</TableHead>
                   <TableHead>Updated</TableHead>
@@ -125,9 +128,6 @@ function CampaignList() {
                       {c.platform}
                     </TableCell>
                     <TableCell>
-                      <StatusBadge status={c.status} />
-                    </TableCell>
-                    <TableCell>
                       <RiskBadge risk={c.risk} />
                     </TableCell>
                     <TableCell>
@@ -139,10 +139,7 @@ function CampaignList() {
                     <TableCell>
                       <div className="flex justify-end gap-1">
                         <Button asChild variant="ghost" size="icon" title="View">
-                          <Link
-                            to="/dashboard/campaigns/$campaignId"
-                            params={{ campaignId: c.id }}
-                          >
+                          <Link to="/dashboard/campaigns/$campaignId" params={{ campaignId: c.id }}>
                             <Eye />
                           </Link>
                         </Button>
@@ -173,7 +170,7 @@ function CampaignList() {
                 ))}
                 {filtered.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={8} className="py-10 text-center text-muted-foreground">
+                    <TableCell colSpan={7} className="py-10 text-center text-muted-foreground">
                       No campaigns match your filters.
                     </TableCell>
                   </TableRow>

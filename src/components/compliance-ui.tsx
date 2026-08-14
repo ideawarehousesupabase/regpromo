@@ -1,33 +1,20 @@
-import type { CampaignStatus, RiskLevel } from "@/data/mock";
+import type { RiskLevel } from "@/data/mock";
 import { cn } from "@/lib/utils";
-
-export function StatusBadge({ status }: { status: CampaignStatus }) {
-  const map: Record<CampaignStatus, string> = {
-    Approved: "bg-success/12 text-success",
-    "Pending Review": "bg-warning/18 text-warning-foreground",
-    "Needs Revision": "bg-destructive/12 text-destructive",
-    Draft: "bg-secondary text-secondary-foreground",
-  };
-  return (
-    <span
-      className={cn(
-        "inline-flex rounded-full px-2.5 py-1 text-xs font-semibold whitespace-nowrap",
-        map[status],
-      )}
-    >
-      {status}
-    </span>
-  );
-}
 
 export function RiskBadge({ risk }: { risk: RiskLevel }) {
   const map: Record<RiskLevel, string> = {
     Low: "bg-success/12 text-success",
     Medium: "bg-warning/18 text-warning-foreground",
     High: "bg-destructive/12 text-destructive",
+    Critical: "bg-destructive text-destructive-foreground",
   };
   return (
-    <span className={cn("inline-flex rounded-full px-2.5 py-1 text-xs font-semibold", map[risk])}>
+    <span
+      className={cn(
+        "inline-flex rounded-full px-2.5 py-1 text-xs font-semibold whitespace-nowrap",
+        map[risk],
+      )}
+    >
       {risk}
     </span>
   );

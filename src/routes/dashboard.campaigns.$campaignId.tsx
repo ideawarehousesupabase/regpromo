@@ -7,8 +7,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ComplianceMeter, RiskBadge, StatusBadge } from "@/components/compliance-ui";
-import { getCampaigns, getReports, saveCampaign, type Campaign, type ComplianceReport } from "@/data/mock";
+import { ComplianceMeter, RiskBadge } from "@/components/compliance-ui";
+import {
+  getCampaigns,
+  getReports,
+  saveCampaign,
+  type Campaign,
+  type ComplianceReport,
+} from "@/data/mock";
 
 export const Route = createFileRoute("/dashboard/campaigns/$campaignId")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -22,7 +28,10 @@ export const Route = createFileRoute("/dashboard/campaigns/$campaignId")({
   head: ({ loaderData }) => {
     if (!loaderData) {
       return {
-        meta: [{ title: "Campaign unavailable — ComplyStep" }, { name: "robots", content: "noindex" }],
+        meta: [
+          { title: "Campaign unavailable — ComplyStep" },
+          { name: "robots", content: "noindex" },
+        ],
       };
     }
     const title = `${loaderData.campaign.name} — ComplyStep`;
@@ -39,7 +48,10 @@ export const Route = createFileRoute("/dashboard/campaigns/$campaignId")({
 });
 
 function CampaignDetail() {
-  const { campaign, report } = Route.useLoaderData() as { campaign: Campaign; report: ComplianceReport | null };
+  const { campaign, report } = Route.useLoaderData() as {
+    campaign: Campaign;
+    report: ComplianceReport | null;
+  };
   const { edit } = Route.useSearch();
   const navigate = useNavigate();
   const [draft, setDraft] = useState(campaign);
@@ -51,7 +63,11 @@ function CampaignDetail() {
   return (
     <div className="mx-auto w-full max-w-6xl space-y-6">
       <div className="flex flex-wrap items-center gap-3">
-        <Button variant="ghost" size="icon" onClick={() => navigate({ to: "/dashboard/campaigns" })}>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => navigate({ to: "/dashboard/campaigns" })}
+        >
           <ArrowLeft />
         </Button>
         <div className="min-w-0">
@@ -62,7 +78,6 @@ function CampaignDetail() {
         </div>
         <div className="ml-auto flex items-center gap-2">
           <RiskBadge risk={campaign.risk} />
-          <StatusBadge status={campaign.status} />
         </div>
       </div>
 
@@ -119,7 +134,11 @@ function CampaignDetail() {
                     };
                     saveCampaign(updated);
                     toast.success("Campaign updated.");
-                    navigate({ to: "/dashboard/campaigns/$campaignId", params: { campaignId: campaign.id }, search: { edit: false } });
+                    navigate({
+                      to: "/dashboard/campaigns/$campaignId",
+                      params: { campaignId: campaign.id },
+                      search: { edit: false },
+                    });
                   }}
                 >
                   <Save /> Save changes
@@ -134,7 +153,9 @@ function CampaignDetail() {
                   ["Disclaimer", campaign.disclaimer || "— none provided —"],
                 ].map(([label, value]) => (
                   <div key={label}>
-                    <dt className="text-xs tracking-wide text-muted-foreground uppercase">{label}</dt>
+                    <dt className="text-xs tracking-wide text-muted-foreground uppercase">
+                      {label}
+                    </dt>
                     <dd className="mt-1 rounded-xl bg-secondary/60 p-3 leading-relaxed">{value}</dd>
                   </div>
                 ))}

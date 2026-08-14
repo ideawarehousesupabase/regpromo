@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Loader2 } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Loader2, MailCheck } from "lucide-react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { AuthShell } from "@/components/auth-shell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { signUp } from "@/lib/auth";
+import { sendSignupLink } from "@/lib/auth";
 
 export const Route = createFileRoute("/signup")({
   head: () => ({
@@ -28,68 +28,39 @@ export const Route = createFileRoute("/signup")({
   component: SignupPage,
 });
 
-const schema = z
-  .object({
-    name: z.string().trim().min(2, "Enter your full name").max(100),
-    company: z.string().trim().min(2, "Enter your company name").max(100),
-    email: z.string().trim().email("Enter a valid email address").max(255),
-    password: z.string().min(8, "Password must be at least 8 characters").max(128),
-    confirmPassword: z.string(),
-  })
-  .refine((d) => d.password === d.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  });
+const schema = z.object({
+  email: z.string().trim().email("Enter a valid email address").max(255),
+});
 
 function SignupPage() {
-  const navigate = useNavigate();
-  const [values, setValues] = useState({
-    name: "",
-    company: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const set = (k: keyof typeof values) => (e: React.ChangeEvent<HTMLInputElement>) =>
-    setValues((v) => ({ ...v, [k]: e.target.value }));
+  const [sent, setSent] = useState(false);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const parsed = schema.safeParse(values);
+    const parsed = schema.safeParse({ email });
     if (!parsed.success) {
-      const next: Record<string, string> = {};
-      for (const issue of parsed.error.issues) next[String(issue.path[0])] = issue.message;
-      setErrors(next);
+      setError(parsed.error.issues[0]?.message ?? "Enter a valid email address");
       return;
     }
-    setErrors({});
+    setError("");
     setLoading(true);
     try {
-      await signUp(parsed.data);
-      toast.success("Account created. Welcome to ComplyStep.");
-      navigate({ to: "/dashboard" });
+      await sendSignupLink(parsed.data.email);
+      setSent(true);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Could not create account.");
+      toast.error(err instanceof Error ? err.message : "Could not send verification link.");
     } finally {
       setLoading(false);
     }
   };
 
-  const fields = [
-    { key: "name", label: "Full name", type: "text", ph: "Alex Morgan" },
-    { key: "company", label: "Company name", type: "text", ph: "Northgate Financial" },
-    { key: "email", label: "Work email", type: "email", ph: "alex@company.com" },
-    { key: "password", label: "Password", type: "password", ph: "At least 8 characters" },
-    { key: "confirmPassword", label: "Confirm password", type: "password", ph: "Repeat password" },
-  ] as const;
-
   return (
     <AuthShell
       title="Create your account"
-      subtitle="Set up a workspace and start validating campaigns."
+      subtitle="We'll verify your email first, then you can set a password."
       footer={
         <>
           Already have an account?{" "}
@@ -99,30 +70,50 @@ function SignupPage() {
         </>
       }
     >
-      <form className="space-y-4" onSubmit={submit}>
-        {fields.map((f) => (
-          <div key={f.key} className="space-y-2">
-            <Label htmlFor={f.key}>{f.label}</Label>
+      {sent ? (
+        <div className="surface-glass rounded-2xl p-6 text-center">
+          <MailCheck className="mx-auto size-8 text-primary" />
+          <p className="mt-4 text-sm font-medium">Check your inbox</p>
+          <p className="mt-2 text-sm text-muted-foreground">
+            We sent a verification link to <span className="font-medium">{email}</span>. Open it on
+            this device to confirm your email and set up your password.
+          </p>
+          <p className="mt-2 text-xs text-muted-foreground">
+            Don't see it? Check your spam or junk folder.
+          </p>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="mt-4"
+            onClick={() => setSent(false)}
+          >
+            Use a different email
+          </Button>
+        </div>
+      ) : (
+        <form className="space-y-4" onSubmit={submit}>
+          <div className="space-y-2">
+            <Label htmlFor="email">Work email</Label>
             <Input
-              id={f.key}
-              type={f.type}
-              placeholder={f.ph}
-              value={values[f.key]}
-              onChange={set(f.key)}
-              autoComplete={f.type === "password" ? "new-password" : "on"}
+              id="email"
+              type="email"
+              placeholder="alex@company.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
-            {errors[f.key] && <p className="text-xs text-destructive">{errors[f.key]}</p>}
+            {error && <p className="text-xs text-destructive">{error}</p>}
           </div>
-        ))}
 
-        <Button type="submit" variant="hero" size="lg" className="w-full" disabled={loading}>
-          {loading && <Loader2 className="animate-spin" />}
-          Create account
-        </Button>
-        <p className="text-center text-xs text-muted-foreground">
-          Passwords are hashed before being stored in the users collection.
-        </p>
-      </form>
+          <Button type="submit" variant="hero" size="lg" className="w-full" disabled={loading}>
+            {loading && <Loader2 className="animate-spin" />}
+            Send verification link
+          </Button>
+          <p className="text-center text-xs text-muted-foreground">
+            No password yet — you'll create one after confirming your email.
+          </p>
+        </form>
+      )}
     </AuthShell>
   );
 }

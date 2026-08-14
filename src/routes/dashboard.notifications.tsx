@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { AlertTriangle, BellRing, CheckCheck, CheckCircle2, FileText, TrendingUp } from "lucide-react";
+import { AlertTriangle, BellRing, CheckCheck, FileText, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,7 +13,8 @@ export const Route = createFileRoute("/dashboard/notifications")({
       { title: "Notifications — ComplyStep" },
       {
         name: "description",
-        content: "Approval alerts, generated reports and compliance score changes across your campaigns.",
+        content:
+          "Risk alerts, generated reports and compliance score changes across your campaigns.",
       },
       { property: "og:title", content: "Notifications — ComplyStep" },
       { property: "og:description", content: "Stay on top of compliance changes as they happen." },
@@ -23,7 +24,6 @@ export const Route = createFileRoute("/dashboard/notifications")({
 });
 
 const icons = {
-  approval: CheckCircle2,
   report: FileText,
   score: TrendingUp,
   alert: AlertTriangle,

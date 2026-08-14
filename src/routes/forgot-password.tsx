@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { MailCheck } from "lucide-react";
+import { Loader2, MailCheck } from "lucide-react";
+import { toast } from "sonner";
 import { AuthShell } from "@/components/auth-shell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { requestPasswordReset } from "@/lib/auth";
 
 export const Route = createFileRoute("/forgot-password")({
   head: () => ({
@@ -24,6 +26,24 @@ export const Route = createFileRoute("/forgot-password")({
 function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) {
+      toast.error("Enter your email.");
+      return;
+    }
+    setLoading(true);
+    try {
+      await requestPasswordReset(email);
+      setSent(true);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not send reset instructions.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <AuthShell
@@ -43,18 +63,14 @@ function ForgotPasswordPage() {
           <MailCheck className="mx-auto size-8 text-primary" />
           <p className="mt-4 text-sm font-medium">Check your inbox</p>
           <p className="mt-2 text-sm text-muted-foreground">
-            If an account exists for {email}, reset instructions are on their way. This screen is UI
-            only in the prototype — no email is sent.
+            If an account exists for {email}, reset instructions are on their way.
+          </p>
+          <p className="mt-2 text-xs text-muted-foreground">
+            Don't see it? Check your spam or junk folder.
           </p>
         </div>
       ) : (
-        <form
-          className="space-y-4"
-          onSubmit={(e) => {
-            e.preventDefault();
-            setSent(true);
-          }}
-        >
+        <form className="space-y-4" onSubmit={submit}>
           <div className="space-y-2">
             <Label htmlFor="fp-email">Email</Label>
             <Input
@@ -67,7 +83,8 @@ function ForgotPasswordPage() {
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-          <Button type="submit" variant="hero" size="lg" className="w-full">
+          <Button type="submit" variant="hero" size="lg" className="w-full" disabled={loading}>
+            {loading && <Loader2 className="animate-spin" />}
             Send reset link
           </Button>
         </form>

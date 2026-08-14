@@ -14,8 +14,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ComplianceMeter, RiskBadge, StatusBadge } from "@/components/compliance-ui";
-import { buildMockAnalysis, INDUSTRIES, PLATFORMS, saveCampaign, saveReport } from "@/data/mock";
+import { ComplianceMeter, RiskBadge } from "@/components/compliance-ui";
+import { INDUSTRIES, PLATFORMS, saveCampaign, saveReport } from "@/data/mock";
+import { runComplianceCheck } from "@/lib/compliance-engine";
 
 export const Route = createFileRoute("/dashboard/campaigns/new")({
   head: () => ({
@@ -23,7 +24,8 @@ export const Route = createFileRoute("/dashboard/campaigns/new")({
       { title: "New Campaign — ComplyStep" },
       {
         name: "description",
-        content: "Create a campaign and run a simulated AI compliance check on its ad copy and disclaimers.",
+        content:
+          "Create a campaign and run a rules-based UK compliance check on its ad copy and disclaimers.",
       },
       { property: "og:title", content: "New Campaign — ComplyStep" },
       { property: "og:description", content: "Draft a campaign and scan it for compliance risk." },
@@ -32,7 +34,7 @@ export const Route = createFileRoute("/dashboard/campaigns/new")({
   component: NewCampaign,
 });
 
-type Analysis = ReturnType<typeof buildMockAnalysis>;
+type Analysis = ReturnType<typeof runComplianceCheck>;
 
 function NewCampaign() {
   const navigate = useNavigate();
@@ -69,7 +71,7 @@ function NewCampaign() {
       setStep(i);
       await new Promise((r) => setTimeout(r, 650));
     }
-    setResult(buildMockAnalysis(form));
+    setResult(runComplianceCheck(form));
     setScanning(false);
     toast.success("Compliance analysis complete.");
   };
@@ -77,7 +79,11 @@ function NewCampaign() {
   return (
     <div className="mx-auto w-full max-w-6xl space-y-6">
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="icon" onClick={() => navigate({ to: "/dashboard/campaigns" })}>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => navigate({ to: "/dashboard/campaigns" })}
+        >
           <ArrowLeft />
         </Button>
         <div>
@@ -187,14 +193,16 @@ function NewCampaign() {
                     return;
                   }
                   const newId = `cmp-${Math.floor(1000 + Math.random() * 9000)}`;
+                  // Score the saved campaign from its own content so every stored
+                  // campaign carries a real, rules-derived score rather than a placeholder.
+                  const analysis = runComplianceCheck(form);
                   saveCampaign({
                     id: newId,
                     name: form.name,
                     industry: form.industry,
                     platform: form.platform,
-                    status: "Draft",
-                    risk: "Low",
-                    score: 0,
+                    risk: analysis.risk,
+                    score: analysis.score,
                     updatedAt: new Date().toISOString().split("T")[0],
                     description: form.description,
                     adCopy: form.adCopy,
@@ -220,8 +228,9 @@ function NewCampaign() {
 
             {!scanning && !result && (
               <p className="mt-6 text-sm text-muted-foreground">
-                Run a check to see a simulated score, flagged clauses and recommended fixes. This
-                MVP uses deterministic rules, not a live model.
+                Run a check to see a score, flagged clauses and recommended fixes. This checks your
+                copy against UK compliance keyword rules for the selected industry — not a live AI
+                model.
               </p>
             )}
 
@@ -252,7 +261,6 @@ function NewCampaign() {
                 <ComplianceMeter score={result.score} risk={result.risk} />
                 <div className="flex justify-center gap-2">
                   <RiskBadge risk={result.risk} />
-                  <StatusBadge status={result.status} />
                 </div>
                 <div className="space-y-3">
                   {result.breakdown.map((b) => (
@@ -283,6 +291,14 @@ function NewCampaign() {
                           <RiskBadge risk={i.severity} />
                         </div>
                         <p className="mt-1 text-xs text-muted-foreground">{i.detail}</p>
+                        {i.matched && (
+                          <p className="mt-2 text-xs text-muted-foreground">
+                            Matched: <span className="font-mono">&ldquo;{i.matched}&rdquo;</span>
+                          </p>
+                        )}
+                        <p className="mt-2 text-xs text-muted-foreground">
+                          {i.category} · −{i.impact} pts
+                        </p>
                         <p className="mt-2 text-xs font-medium text-primary">{i.clause}</p>
                       </li>
                     ))}
@@ -307,7 +323,6 @@ function NewCampaign() {
                       name: form.name,
                       industry: form.industry,
                       platform: form.platform,
-                      status: result.status,
                       risk: result.risk,
                       score: result.score,
                       updatedAt: today,
@@ -324,7 +339,6 @@ function NewCampaign() {
                       platform: form.platform,
                       score: result.score,
                       risk: result.risk,
-                      status: result.status,
                       createdAt: today,
                       breakdown: result.breakdown,
                       issues: result.issues,

@@ -1,12 +1,19 @@
-export type RiskLevel = "Low" | "Medium" | "High";
-export type CampaignStatus = "Approved" | "Pending Review" | "Needs Revision" | "Draft";
+/**
+ * Risk bands are driven entirely by the compliance score:
+ * 90–100 Low · 75–89 Medium · 60–74 High · 0–59 Critical.
+ * See `riskFromScore` in `@/lib/compliance-engine` — the single source of truth.
+ */
+export type RiskLevel = "Low" | "Medium" | "High" | "Critical";
+
+/** The four scored categories that make up a compliance result. */
+export type IssueCategory =
+  "Claim Substantiation" | "Disclosure Completeness" | "Consumer Clarity" | "Platform Policy Fit";
 
 export interface Campaign {
   id: string;
   name: string;
   industry: string;
   platform: string;
-  status: CampaignStatus;
   risk: RiskLevel;
   score: number;
   updatedAt: string;
@@ -22,6 +29,12 @@ export interface ComplianceIssue {
   detail: string;
   severity: RiskLevel;
   clause: string;
+  category: IssueCategory;
+  /** Points deducted from the category by this issue. */
+  impact: number;
+  /** The phrase that triggered the rule, where one was matched. */
+  matched?: string;
+  recommendation: string;
 }
 
 export interface ComplianceReport {
@@ -32,7 +45,6 @@ export interface ComplianceReport {
   platform: string;
   score: number;
   risk: RiskLevel;
-  status: CampaignStatus;
   createdAt: string;
   breakdown: { label: string; score: number }[];
   issues: ComplianceIssue[];
@@ -44,7 +56,7 @@ export interface Notification {
   id: string;
   title: string;
   message: string;
-  type: "approval" | "report" | "score" | "alert";
+  type: "report" | "score" | "alert";
   time: string;
   read: boolean;
 }
@@ -58,7 +70,6 @@ export const campaigns: Campaign[] = [
     name: "Q3 High-Yield Savings Launch",
     industry: "Financial Services",
     platform: "Google Ads",
-    status: "Approved",
     risk: "Low",
     score: 94,
     updatedAt: "2026-07-21",
@@ -72,7 +83,6 @@ export const campaigns: Campaign[] = [
     name: "Telehealth Autumn Awareness",
     industry: "Healthcare",
     platform: "Meta Ads",
-    status: "Pending Review",
     risk: "Medium",
     score: 78,
     updatedAt: "2026-07-19",
@@ -86,8 +96,7 @@ export const campaigns: Campaign[] = [
     name: "Injury Claims Retargeting",
     industry: "Legal",
     platform: "Website",
-    status: "Needs Revision",
-    risk: "High",
+    risk: "Critical",
     score: 52,
     updatedAt: "2026-07-16",
     description: "Retargeting banner set for personal injury claim intake.",
@@ -100,8 +109,7 @@ export const campaigns: Campaign[] = [
     name: "Weekend Free Spins Promo",
     industry: "Gambling",
     platform: "TikTok",
-    status: "Needs Revision",
-    risk: "High",
+    risk: "Critical",
     score: 47,
     updatedAt: "2026-07-14",
     description: "Short-form video promo offering 50 free spins on weekend deposits.",
@@ -114,7 +122,6 @@ export const campaigns: Campaign[] = [
     name: "Pension Transfer Explainer",
     industry: "Financial Services",
     platform: "Email",
-    status: "Approved",
     risk: "Low",
     score: 91,
     updatedAt: "2026-07-11",
@@ -128,8 +135,7 @@ export const campaigns: Campaign[] = [
     name: "Dental Whitening Spring Offer",
     industry: "Healthcare",
     platform: "Meta Ads",
-    status: "Pending Review",
-    risk: "Medium",
+    risk: "High",
     score: 72,
     updatedAt: "2026-07-08",
     description: "Seasonal offer for a cosmetic dentistry clinic.",
@@ -142,8 +148,7 @@ export const campaigns: Campaign[] = [
     name: "SME Business Loan Prospecting",
     industry: "Financial Services",
     platform: "Google Ads",
-    status: "Draft",
-    risk: "Medium",
+    risk: "High",
     score: 68,
     updatedAt: "2026-07-04",
     description: "Prospecting campaign for unsecured SME lending up to 250k.",
@@ -162,21 +167,24 @@ export const reports: ComplianceReport[] = [
     platform: "Google Ads",
     score: 94,
     risk: "Low",
-    status: "Approved",
     createdAt: "2026-07-21",
     breakdown: [
-      { label: "Disclosure completeness", score: 96 },
-      { label: "Claim substantiation", score: 93 },
-      { label: "Consumer clarity", score: 92 },
-      { label: "Platform policy fit", score: 95 },
+      { label: "Claim Substantiation", score: 93 },
+      { label: "Disclosure Completeness", score: 96 },
+      { label: "Consumer Clarity", score: 92 },
+      { label: "Platform Policy Fit", score: 100 },
     ],
     issues: [
       {
-        id: "i1",
+        id: "rate-variability-placement",
         title: "Rate variability wording could be clearer",
         detail: "The variable-rate note appears only in the landing page footer.",
         severity: "Low",
-        clause: "Financial promotions — fair, clear and not misleading",
+        clause: "FCA COBS 4.2 — financial promotions must give a balanced view of risk",
+        category: "Disclosure Completeness",
+        impact: 4,
+        matched: "Variable rate accurate as of publication",
+        recommendation: "Repeat the variable-rate note in the advertisement copy itself.",
       },
     ],
     recommendations: [
@@ -187,7 +195,6 @@ export const reports: ComplianceReport[] = [
       { label: "Campaign created", time: "2026-07-19 09:14" },
       { label: "Compliance check run", time: "2026-07-21 11:02" },
       { label: "Report generated", time: "2026-07-21 11:03" },
-      { label: "Approved for publishing", time: "2026-07-21 15:40" },
     ],
   },
   {
@@ -198,28 +205,34 @@ export const reports: ComplianceReport[] = [
     platform: "Meta Ads",
     score: 78,
     risk: "Medium",
-    status: "Pending Review",
     createdAt: "2026-07-19",
     breakdown: [
-      { label: "Disclosure completeness", score: 71 },
-      { label: "Claim substantiation", score: 76 },
-      { label: "Consumer clarity", score: 84 },
-      { label: "Platform policy fit", score: 80 },
+      { label: "Claim Substantiation", score: 76 },
+      { label: "Disclosure Completeness", score: 71 },
+      { label: "Consumer Clarity", score: 84 },
+      { label: "Platform Policy Fit", score: 100 },
     ],
     issues: [
       {
-        id: "i1",
+        id: "implied-speed-claim",
         title: "Implied speed-of-care claim",
-        detail: "\"in minutes\" implies a guaranteed wait time that is not substantiated.",
+        detail: '"in minutes" implies a guaranteed wait time that is not substantiated.',
         severity: "Medium",
-        clause: "Health advertising — substantiation of performance claims",
+        clause: "CAP Code 3.7 — marketers must hold evidence to prove their claims",
+        category: "Claim Substantiation",
+        impact: 18,
+        matched: "in minutes",
+        recommendation: "Qualify the wait-time claim with typical response times.",
       },
       {
-        id: "i2",
+        id: "missing-registration-reference",
         title: "Missing clinician registration reference",
         detail: "Regulator registration details are not surfaced in the creative.",
         severity: "Low",
-        clause: "Healthcare provider identification",
+        clause: "CAP Code Section 12 — medicines, medical devices, health and beauty",
+        category: "Disclosure Completeness",
+        impact: 9,
+        recommendation: "Add the clinician registration body and reference number.",
       },
     ],
     recommendations: [
@@ -240,29 +253,38 @@ export const reports: ComplianceReport[] = [
     industry: "Legal",
     platform: "Website",
     score: 52,
-    risk: "High",
-    status: "Needs Revision",
+    risk: "Critical",
     createdAt: "2026-07-16",
     breakdown: [
-      { label: "Disclosure completeness", score: 38 },
-      { label: "Claim substantiation", score: 44 },
-      { label: "Consumer clarity", score: 61 },
-      { label: "Platform policy fit", score: 65 },
+      { label: "Claim Substantiation", score: 40 },
+      { label: "Disclosure Completeness", score: 38 },
+      { label: "Consumer Clarity", score: 78 },
+      { label: "Platform Policy Fit", score: 100 },
     ],
     issues: [
       {
-        id: "i1",
-        title: "Absolute guarantee of outcome",
-        detail: "\"Guaranteed compensation\" cannot be substantiated for legal services.",
-        severity: "High",
-        clause: "Legal services advertising — prohibited guarantees",
+        id: "legal-guaranteed-outcome",
+        title: "Guaranteed legal outcome",
+        detail: '"Guaranteed compensation" cannot be substantiated for legal services.',
+        severity: "Critical",
+        clause: "CAP Code 3.1 / SRA Code of Conduct — publicity must not be misleading",
+        category: "Claim Substantiation",
+        impact: 60,
+        matched: "Guaranteed compensation",
+        recommendation:
+          "Remove the guarantee and state that outcomes depend on the circumstances of each case.",
       },
       {
-        id: "i2",
-        title: "Missing disclaimer",
+        id: "legal-fee-clarity",
+        title: "Unclear fee or charging information",
         detail: "No fee-structure or eligibility disclaimer is present.",
-        severity: "High",
-        clause: "Mandatory consumer disclosure",
+        severity: "Medium",
+        clause: "CAP Code 3.9 / SRA Transparency Rules — costs information must be clear",
+        category: "Disclosure Completeness",
+        impact: 25,
+        matched: "no win, no fee",
+        recommendation:
+          "State the success fee or deduction that applies and any costs the client could still owe.",
       },
     ],
     recommendations: [
@@ -274,7 +296,6 @@ export const reports: ComplianceReport[] = [
       { label: "Campaign created", time: "2026-07-15 12:31" },
       { label: "Compliance check run", time: "2026-07-16 08:44" },
       { label: "Report generated", time: "2026-07-16 08:45" },
-      { label: "Returned for revision", time: "2026-07-16 09:10" },
     ],
   },
   {
@@ -285,41 +306,43 @@ export const reports: ComplianceReport[] = [
     platform: "Email",
     score: 91,
     risk: "Low",
-    status: "Approved",
     createdAt: "2026-07-11",
     breakdown: [
-      { label: "Disclosure completeness", score: 93 },
-      { label: "Claim substantiation", score: 90 },
-      { label: "Consumer clarity", score: 88 },
-      { label: "Platform policy fit", score: 93 },
+      { label: "Claim Substantiation", score: 90 },
+      { label: "Disclosure Completeness", score: 93 },
+      { label: "Consumer Clarity", score: 88 },
+      { label: "Platform Policy Fit", score: 100 },
     ],
     issues: [
       {
-        id: "i1",
+        id: "advice-boundary-wording",
         title: "Advice boundary wording",
         detail: "Educational framing should be repeated in the email preheader.",
         severity: "Low",
-        clause: "Advice vs. guidance boundary",
+        clause: "FCA COBS 4.2 — financial promotions must be fair, clear and not misleading",
+        category: "Consumer Clarity",
+        impact: 12,
+        matched: "not personal financial advice",
+        recommendation: 'Add "educational only" to the preheader text.',
       },
     ],
     recommendations: [
-      "Add \"educational only\" to the preheader text.",
+      'Add "educational only" to the preheader text.',
       "Link to the full risk warning in every message of the sequence.",
     ],
     timeline: [
       { label: "Campaign created", time: "2026-07-09 14:02" },
       { label: "Compliance check run", time: "2026-07-11 09:20" },
       { label: "Report generated", time: "2026-07-11 09:21" },
-      { label: "Approved for publishing", time: "2026-07-11 12:00" },
     ],
   },
 ];
 
 export const dashboardStats = {
   totalCampaigns: 24,
-  approvedCampaigns: 15,
-  pendingReview: 6,
-  highRisk: 3,
+  lowRisk: 15,
+  highRisk: 6,
+  criticalRisk: 3,
   averageScore: 81,
   hoursSaved: 46,
 };
@@ -334,19 +357,27 @@ export const scoreTrend = [
 ];
 
 export const recentActivity = [
-  { id: "a1", text: "Q3 High-Yield Savings Launch approved for publishing", time: "2 hours ago" },
-  { id: "a2", text: "Compliance report generated for Telehealth Autumn Awareness", time: "6 hours ago" },
-  { id: "a3", text: "Injury Claims Retargeting returned for revision", time: "Yesterday" },
+  { id: "a1", text: "Q3 High-Yield Savings Launch scored 94% — low risk", time: "2 hours ago" },
+  {
+    id: "a2",
+    text: "Compliance report generated for Telehealth Autumn Awareness",
+    time: "6 hours ago",
+  },
+  { id: "a3", text: "Injury Claims Retargeting flagged as critical risk", time: "Yesterday" },
   { id: "a4", text: "Compliance score updated for Weekend Free Spins Promo", time: "2 days ago" },
-  { id: "a5", text: "Pension Transfer Explainer archived to compliance history", time: "4 days ago" },
+  {
+    id: "a5",
+    text: "Pension Transfer Explainer archived to compliance history",
+    time: "4 days ago",
+  },
 ];
 
 export const notifications: Notification[] = [
   {
     id: "n1",
-    title: "Campaign approved",
-    message: "Q3 High-Yield Savings Launch reached a 94% compliance score and is cleared to publish.",
-    type: "approval",
+    title: "Low risk result",
+    message: "Q3 High-Yield Savings Launch reached a 94% compliance score with no major issues.",
+    type: "score",
     time: "2 hours ago",
     read: false,
   },
@@ -368,7 +399,7 @@ export const notifications: Notification[] = [
   },
   {
     id: "n4",
-    title: "High risk detected",
+    title: "Critical risk detected",
     message: "Injury Claims Retargeting contains a prohibited outcome guarantee.",
     type: "alert",
     time: "3 days ago",
@@ -384,102 +415,6 @@ export const notifications: Notification[] = [
   },
 ];
 
-/** Deterministic mock "AI" analysis used by the Run Compliance Check flow. */
-export function buildMockAnalysis(input: {
-  name: string;
-  industry: string;
-  platform: string;
-  adCopy: string;
-  disclaimer: string;
-}) {
-  const risky = /guarantee|risk[- ]free|win big|instant|best ever|no risk/i;
-  let score = 91;
-  const issues: ComplianceIssue[] = [];
-
-  if (!input.disclaimer.trim()) {
-    score -= 22;
-    issues.push({
-      id: "missing-disclaimer",
-      title: "Missing disclaimer",
-      detail: "No mandatory consumer disclaimer was supplied for this campaign.",
-      severity: "High",
-      clause: "Mandatory consumer disclosure",
-    });
-  } else if (input.disclaimer.trim().length < 40) {
-    score -= 8;
-    issues.push({
-      id: "thin-disclaimer",
-      title: "Disclaimer lacks detail",
-      detail: "The disclaimer is short and may not cover all required conditions.",
-      severity: "Medium",
-      clause: "Mandatory consumer disclosure",
-    });
-  }
-
-  if (risky.test(input.adCopy)) {
-    score -= 18;
-    issues.push({
-      id: "absolute-claim",
-      title: "Unsubstantiated promotional wording",
-      detail: "The advertisement copy contains absolute or outcome-guaranteeing language.",
-      severity: "High",
-      clause: "Fair, clear and not misleading promotions",
-    });
-  }
-
-  if (input.industry === "Gambling" || input.industry === "Legal") {
-    score -= 6;
-    issues.push({
-      id: "sector-scrutiny",
-      title: "Heightened sector scrutiny",
-      detail: `${input.industry} promotions require additional vulnerability safeguards.`,
-      severity: "Medium",
-      clause: `${input.industry} sector advertising rules`,
-    });
-  }
-
-  if (input.platform === "TikTok" || input.platform === "Meta Ads") {
-    score -= 3;
-    issues.push({
-      id: "platform-policy",
-      title: "Platform policy nuance",
-      detail: `${input.platform} restricts certain regulated-sector creative formats.`,
-      severity: "Low",
-      clause: "Platform advertising policy",
-    });
-  }
-
-  score = Math.max(28, Math.min(98, score));
-  const risk: RiskLevel = score >= 85 ? "Low" : score >= 65 ? "Medium" : "High";
-  const status: CampaignStatus =
-    score >= 85 ? "Approved" : score >= 65 ? "Pending Review" : "Needs Revision";
-
-  const recommendations = [
-    ...(issues.some((i) => i.id.includes("disclaimer"))
-      ? ["Add a complete, prominent disclaimer above the fold."]
-      : []),
-    ...(issues.some((i) => i.id === "absolute-claim")
-      ? ["Replace guarantees with qualified, evidence-backed language."]
-      : []),
-    "Simplify language to improve consumer understanding.",
-    "Keep a versioned record of substantiation for every claim.",
-  ];
-
-  return {
-    score,
-    risk,
-    status,
-    issues,
-    recommendations,
-    breakdown: [
-      { label: "Disclosure completeness", score: Math.max(20, score - 5) },
-      { label: "Claim substantiation", score: Math.min(99, score + 2) },
-      { label: "Consumer clarity", score: Math.max(25, score - 2) },
-      { label: "Platform policy fit", score: Math.min(99, score + 4) },
-    ],
-  };
-}
-
 const CAMPAIGNS_STORAGE_KEY = "complystep_campaigns_v1";
 const REPORTS_STORAGE_KEY = "complystep_reports_v1";
 
@@ -491,7 +426,9 @@ export function getCampaigns(): Campaign[] {
       const parsed = JSON.parse(stored);
       if (Array.isArray(parsed) && parsed.length > 0) return parsed;
     }
-  } catch {}
+  } catch {
+    /* fall back to the seeded campaigns below */
+  }
   return campaigns;
 }
 
@@ -507,7 +444,9 @@ export function saveCampaign(newCampaign: Campaign): void {
   if (typeof window !== "undefined") {
     try {
       localStorage.setItem(CAMPAIGNS_STORAGE_KEY, JSON.stringify(updated));
-    } catch {}
+    } catch {
+      /* storage unavailable — in-memory list above still reflects the change */
+    }
   }
 }
 
@@ -521,7 +460,9 @@ export function deleteCampaign(id: string): void {
   if (typeof window !== "undefined") {
     try {
       localStorage.setItem(CAMPAIGNS_STORAGE_KEY, JSON.stringify(updated));
-    } catch {}
+    } catch {
+      /* storage unavailable — in-memory list above still reflects the change */
+    }
   }
 }
 
@@ -533,7 +474,9 @@ export function getReports(): ComplianceReport[] {
       const parsed = JSON.parse(stored);
       if (Array.isArray(parsed) && parsed.length > 0) return parsed;
     }
-  } catch {}
+  } catch {
+    /* fall back to the seeded reports below */
+  }
   return reports;
 }
 
@@ -549,6 +492,8 @@ export function saveReport(newReport: ComplianceReport): void {
   if (typeof window !== "undefined") {
     try {
       localStorage.setItem(REPORTS_STORAGE_KEY, JSON.stringify(updated));
-    } catch {}
+    } catch {
+      /* storage unavailable — in-memory list above still reflects the change */
+    }
   }
 }
