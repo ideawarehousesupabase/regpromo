@@ -51,7 +51,9 @@ export async function sendSignupLink(email: string): Promise<void> {
   const normalized = email.trim().toLowerCase();
 
   const actionCodeSettings = {
-    url: `${window.location.origin}/verify-email`,
+    // The address rides along in the link so that opening it on a second
+    // device can finish sign-in without asking for the email again.
+    url: `${window.location.origin}/verify-email?email=${encodeURIComponent(normalized)}`,
     handleCodeInApp: true,
   };
 
@@ -68,19 +70,37 @@ export function isEmailSignInLink(url: string): boolean {
   return isSignInWithEmailLink(auth, url);
 }
 
+/** Reads the address the signup link was addressed to, if it carries one. */
+function emailFromLink(url: string): string | null {
+  try {
+    return new URL(url).searchParams.get("email");
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Completes the passwordless sign-in from the emailed link. This is what
  * actually proves the user controls the mailbox — Firebase marks the
- * resulting account as `emailVerified`. If the link is opened on a
- * different device/browser than it was requested from, `emailOverride`
- * lets the UI ask the user to re-enter their email to confirm it matches.
+ * resulting account as `emailVerified`.
+ *
+ * The address is resolved in order of trustworthiness: one the user typed
+ * themselves, then the one saved when the link was requested, then the one
+ * carried in the link. That last fallback is what lets a link opened on a
+ * second device finish without a second prompt; `emailOverride` still backs
+ * up links that predate this or have had the parameter stripped.
  */
 export async function completeEmailLinkSignIn(
   url: string,
   emailOverride?: string,
 ): Promise<string> {
   const auth = requireAuth();
-  const email = (emailOverride ?? localStorage.getItem(PENDING_EMAIL_KEY) ?? "")
+  const email = (
+    emailOverride ??
+    localStorage.getItem(PENDING_EMAIL_KEY) ??
+    emailFromLink(url) ??
+    ""
+  )
     .trim()
     .toLowerCase();
   if (!email) {
