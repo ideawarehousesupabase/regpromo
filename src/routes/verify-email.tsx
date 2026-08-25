@@ -7,7 +7,12 @@ import { AuthShell } from "@/components/auth-shell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { completeEmailLinkSignIn, finishAccountSetup, isEmailSignInLink } from "@/lib/auth";
+import {
+  completeEmailLinkSignIn,
+  EmailLinkError,
+  finishAccountSetup,
+  isEmailSignInLink,
+} from "@/lib/auth";
 
 export const Route = createFileRoute("/verify-email")({
   head: () => ({
@@ -22,7 +27,16 @@ export const Route = createFileRoute("/verify-email")({
   component: VerifyEmailPage,
 });
 
-type Stage = "checking" | "confirm-email" | "set-password" | "invalid";
+type Stage = "checking" | "confirm-email" | "set-password" | "already-registered" | "invalid";
+
+/** Picks the screen that explains why verification could not continue. */
+function stageForError(err: unknown): Stage {
+  if (err instanceof EmailLinkError) {
+    if (err.reason === "needs-email") return "confirm-email";
+    if (err.reason === "already-registered") return "already-registered";
+  }
+  return "invalid";
+}
 
 const passwordSchema = z
   .object({
@@ -62,7 +76,7 @@ function VerifyEmailPage() {
         setEmail(verifiedEmail);
         setStage("set-password");
       })
-      .catch(() => setStage("confirm-email"));
+      .catch((err) => setStage(stageForError(err)));
   }, []);
 
   const confirmEmail = async (e: React.FormEvent) => {
@@ -78,11 +92,13 @@ function VerifyEmailPage() {
       setEmail(verifiedEmail);
       setStage("set-password");
     } catch (err) {
-      toast.error(
-        err instanceof Error
-          ? err.message
-          : "That link is invalid or has expired. Request a new one.",
-      );
+      // A mismatched address is worth correcting in place; anything else means
+      // the link itself is no longer usable, so move to the explaining screen.
+      if (err instanceof EmailLinkError && err.reason === "needs-email") {
+        toast.error(err.message);
+      } else {
+        setStage(stageForError(err));
+      }
     } finally {
       setConfirmLoading(false);
     }
@@ -107,7 +123,13 @@ function VerifyEmailPage() {
       toast.success("Account created. Welcome to ComplyStep.");
       navigate({ to: "/dashboard" });
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Could not finish setting up your account.");
+      if (err instanceof EmailLinkError) {
+        setStage(stageForError(err));
+      } else {
+        toast.error(
+          err instanceof Error ? err.message : "Could not finish setting up your account.",
+        );
+      }
     } finally {
       setSubmitting(false);
     }
@@ -139,6 +161,37 @@ function VerifyEmailPage() {
           Verification links expire and can only be used once. Head back to the sign-up page to
           request a new one.
         </p>
+      </AuthShell>
+    );
+  }
+
+  if (stage === "already-registered") {
+    return (
+      <AuthShell
+        title="You already have an account"
+        subtitle={
+          email ? `${email} is already registered.` : "This email address is already registered."
+        }
+        footer={
+          <>
+            Wrong address?{" "}
+            <Link to="/signup" className="font-medium text-primary hover:underline">
+              Sign up with a different email
+            </Link>
+          </>
+        }
+      >
+        <p className="text-sm text-muted-foreground">
+          Log in with your password instead. If you have forgotten it, you can reset it.
+        </p>
+        <div className="mt-6 flex flex-col gap-3">
+          <Button asChild variant="hero" size="lg" className="w-full">
+            <Link to="/login">Log in</Link>
+          </Button>
+          <Button asChild variant="outline" size="lg" className="w-full">
+            <Link to="/forgot-password">Reset password</Link>
+          </Button>
+        </div>
       </AuthShell>
     );
   }

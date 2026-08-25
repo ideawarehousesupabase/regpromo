@@ -7,7 +7,7 @@ import { AuthShell } from "@/components/auth-shell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { sendSignupLink } from "@/lib/auth";
+import { EmailLinkError, sendSignupLink } from "@/lib/auth";
 
 export const Route = createFileRoute("/signup")({
   head: () => ({
@@ -35,6 +35,7 @@ const schema = z.object({
 function SignupPage() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
+  const [alreadyRegistered, setAlreadyRegistered] = useState(false);
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
 
@@ -46,12 +47,17 @@ function SignupPage() {
       return;
     }
     setError("");
+    setAlreadyRegistered(false);
     setLoading(true);
     try {
       await sendSignupLink(parsed.data.email);
       setSent(true);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Could not send verification link.");
+      if (err instanceof EmailLinkError && err.reason === "already-registered") {
+        setAlreadyRegistered(true);
+      } else {
+        toast.error(err instanceof Error ? err.message : "Could not send verification link.");
+      }
     } finally {
       setLoading(false);
     }
@@ -100,9 +106,26 @@ function SignupPage() {
               type="email"
               placeholder="alex@company.com"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setAlreadyRegistered(false);
+              }}
+              aria-invalid={Boolean(error) || alreadyRegistered}
             />
             {error && <p className="text-xs text-destructive">{error}</p>}
+            {alreadyRegistered && (
+              <p className="text-xs text-destructive">
+                An account already exists for this email address.{" "}
+                <Link to="/login" className="font-medium underline">
+                  Log in instead
+                </Link>
+                {" or "}
+                <Link to="/forgot-password" className="font-medium underline">
+                  reset your password
+                </Link>
+                .
+              </p>
+            )}
           </div>
 
           <Button type="submit" variant="hero" size="lg" className="w-full" disabled={loading}>

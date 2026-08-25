@@ -10,7 +10,18 @@ import {
   updatePassword,
   type User,
 } from "firebase/auth";
-import { doc, getDoc, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  limit,
+  query,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { getDb, getFirebaseAuth, isFirebaseConfigured } from "./firebase";
 
 export interface SessionUser {
@@ -42,6 +53,60 @@ function requireAuth() {
   return auth;
 }
 
+/** Pulls the `code` off a Firebase error without assuming its shape. */
+function errorCode(err: unknown): string {
+  return typeof err === "object" && err !== null && "code" in err
+    ? String((err as { code: unknown }).code)
+    : "";
+}
+
+/* ------------------------------ signup errors ------------------------------- */
+
+/** Why a sign-up or verification attempt could not go ahead. */
+export type EmailLinkFailure = "already-registered" | "needs-email" | "expired" | "unknown";
+
+/** Carries a machine-readable reason so the UI can pick the right screen. */
+export class EmailLinkError extends Error {
+  readonly reason: EmailLinkFailure;
+
+  constructor(reason: EmailLinkFailure, message: string) {
+    super(message);
+    this.name = "EmailLinkError";
+    this.reason = reason;
+  }
+}
+
+/* ---------------------------- account existence ----------------------------- */
+
+/**
+ * True when a fully registered account already uses this address.
+ *
+ * Firebase's own `fetchSignInMethodsForEmail` cannot answer this: it is
+ * deprecated, and it returns nothing at all once email-enumeration protection
+ * is switched on, which is the default for projects created recently. The
+ * profile document written at the very end of registration is the reliable
+ * signal instead, because it only exists once someone has finished signing up.
+ *
+ * A half-finished sign-up — link clicked but password never set — leaves no
+ * profile behind, so that address stays free to register with again.
+ */
+export async function accountExists(email: string): Promise<boolean> {
+  const db = getDb();
+  if (!db) return false;
+
+  try {
+    const snap = await getDocs(
+      query(collection(db, USERS), where("email", "==", email.trim().toLowerCase()), limit(1)),
+    );
+    return !snap.empty;
+  } catch (err) {
+    // A failed lookup must never be the reason someone cannot sign up. If the
+    // read is refused, fall through and let Firebase arbitrate at link time.
+    console.warn("Could not check for an existing account; continuing with sign-up.", err);
+    return false;
+  }
+}
+
 /* ------------------------------ signup: step 1 ------------------------------ */
 // Send a verification / sign-in link to the given email address. Firebase
 // confirms the user owns the mailbox by requiring them to open this link.
@@ -49,6 +114,13 @@ function requireAuth() {
 export async function sendSignupLink(email: string): Promise<void> {
   const auth = requireAuth();
   const normalized = email.trim().toLowerCase();
+
+  if (await accountExists(normalized)) {
+    throw new EmailLinkError(
+      "already-registered",
+      "An account already exists for this email address.",
+    );
+  }
 
   const actionCodeSettings = {
     // The address rides along in the link so that opening it on a second
@@ -84,11 +156,12 @@ function emailFromLink(url: string): string | null {
  * actually proves the user controls the mailbox — Firebase marks the
  * resulting account as `emailVerified`.
  *
- * The address is resolved in order of trustworthiness: one the user typed
- * themselves, then the one saved when the link was requested, then the one
- * carried in the link. That last fallback is what lets a link opened on a
- * second device finish without a second prompt; `emailOverride` still backs
- * up links that predate this or have had the parameter stripped.
+ * The address is taken from the link itself first, which is what lets the
+ * link work on any device without asking again. Firebase rejects the attempt
+ * if that address does not match the one the code was issued for, so trusting
+ * the link here cannot be used to sign in as somebody else. Local storage and
+ * `emailOverride` remain as fallbacks for links that have had their query
+ * string stripped in transit.
  */
 export async function completeEmailLinkSignIn(
   url: string,
@@ -97,20 +170,38 @@ export async function completeEmailLinkSignIn(
   const auth = requireAuth();
   const email = (
     emailOverride ??
-    localStorage.getItem(PENDING_EMAIL_KEY) ??
     emailFromLink(url) ??
+    localStorage.getItem(PENDING_EMAIL_KEY) ??
     ""
   )
     .trim()
     .toLowerCase();
+
   if (!email) {
-    throw new Error(
-      "We couldn't find the email this link was sent to. Enter it below to continue.",
+    throw new EmailLinkError(
+      "needs-email",
+      "We couldn't tell which address this link was sent to.",
     );
   }
 
-  const credential = await signInWithEmailLink(auth, email, url);
-  pendingLinkUser = credential.user;
+  let signedIn;
+  try {
+    signedIn = await signInWithEmailLink(auth, email, url);
+  } catch (err) {
+    const code = errorCode(err);
+    if (code === "auth/invalid-action-code" || code === "auth/expired-action-code") {
+      throw new EmailLinkError("expired", "This link has expired or has already been used.");
+    }
+    if (code === "auth/invalid-email") {
+      throw new EmailLinkError(
+        "needs-email",
+        "That address doesn't match the one this link was sent to.",
+      );
+    }
+    throw new EmailLinkError("unknown", "We couldn't verify this link.");
+  }
+
+  pendingLinkUser = signedIn.user;
   localStorage.removeItem(PENDING_EMAIL_KEY);
   return email;
 }
@@ -134,7 +225,16 @@ export async function finishAccountSetup(input: FinishSignupInput): Promise<Sess
   const auth = requireAuth();
   const user = pendingLinkUser ?? auth.currentUser;
   if (!user || !user.email) {
-    throw new Error("Your verification link has expired. Request a new one from the sign-up page.");
+    throw new EmailLinkError(
+      "expired",
+      "Your verification link has expired. Request a new one from the sign-up page.",
+    );
+  }
+
+  // A profile already on file means this account finished registering before.
+  // Setting a password now would quietly replace the existing one, so stop.
+  if (await readProfile(user.uid)) {
+    throw new EmailLinkError("already-registered", "This account is already registered.");
   }
 
   await updatePassword(user, input.password);
@@ -189,8 +289,7 @@ export async function requestPasswordReset(email: string): Promise<void> {
   try {
     await sendPasswordResetEmail(auth, normalized);
   } catch (err) {
-    const code = err instanceof Object && "code" in err ? (err as { code: string }).code : "";
-    if (code === "auth/user-not-found") return;
+    if (errorCode(err) === "auth/user-not-found") return;
     throw err;
   }
 }
