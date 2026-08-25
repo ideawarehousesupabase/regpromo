@@ -11,7 +11,7 @@ import {
 import { PublicLayout } from "@/components/public-layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
@@ -48,11 +48,8 @@ function Home() {
             ComplyStep reviews financial, health, legal and gambling promotions before they go live, and monitors them continuously once published, so marketing moves fast and compliance stays in control.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Button asChild variant="hero" size="lg">
-              <Link to="/signup">Book a Demo</Link>
-            </Button>
             <Button asChild variant="outline" size="lg">
-              <Link to="/features">See the Platform</Link>
+              <Link to="/products">See the Platform</Link>
             </Button>
           </div>
           
@@ -221,9 +218,59 @@ function Home() {
         </div>
       </section>
 
+      {/* FAQs */}
+      <section className="border-y border-border/60 bg-card/50" id="faqs">
+        <div className="mx-auto w-full max-w-4xl px-4 py-20 sm:px-6">
+          <div className="mb-12">
+            <span className="inline-flex items-center gap-2 text-sm font-semibold tracking-wide text-primary uppercase">
+              <span className="size-1.5 rounded-full bg-primary" /> FAQs
+            </span>
+            <h2 className="mt-4 text-3xl font-bold sm:text-4xl">Questions we hear most often.</h2>
+          </div>
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="item-1">
+              <AccordionTrigger className="text-left font-display text-lg">How is ComplyStep different from a generic AI content checker?</AccordionTrigger>
+              <AccordionContent className="text-muted-foreground text-base">
+                ComplyStep runs on a sector-specific regulatory knowledge graph trained on FCA, ASA, MHRA and CAP Code sources, with explainable multi-agent reasoning, so every flag cites the rule behind it.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="item-2">
+              <AccordionTrigger className="text-left font-display text-lg">Does ComplyStep only review campaigns before they go live?</AccordionTrigger>
+              <AccordionContent className="text-muted-foreground text-base">
+                No. We cover the full lifecycle: pre-publication review, approval workflow, post-publication live monitoring, affiliate surveillance, audit evidence and performance analytics.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="item-3">
+              <AccordionTrigger className="text-left font-display text-lg">Which industries do you support?</AccordionTrigger>
+              <AccordionContent className="text-muted-foreground text-base">
+                UK financial advisors, private healthcare, legal services, and gambling and affiliate brands, plus adjacent regulated sectors on request.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="item-4">
+              <AccordionTrigger className="text-left font-display text-lg">How long does onboarding take?</AccordionTrigger>
+              <AccordionContent className="text-muted-foreground text-base">
+                Most teams are live within two weeks. We import your existing rules and brand guidelines, then calibrate scoring against your recent campaigns.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="item-5">
+              <AccordionTrigger className="text-left font-display text-lg">Will compliance slow my marketing team down?</AccordionTrigger>
+              <AccordionContent className="text-muted-foreground text-base">
+                The opposite. Approvals move from weeks to hours, and we link approved layouts to conversion performance so compliance becomes a growth lever.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="item-6">
+              <AccordionTrigger className="text-left font-display text-lg">Is my campaign data secure?</AccordionTrigger>
+              <AccordionContent className="text-muted-foreground text-base">
+                Yes. Data is processed in line with UK GDPR, access is role-based, and every review is stored in an immutable audit trail you can export for regulators.
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </div>
+      </section>
+
       {/* CTA Banner */}
       <section className="mx-auto w-full max-w-6xl px-4 py-20 sm:px-6">
-        <div className="rounded-3xl bg-foreground px-6 py-16 text-center sm:py-24">
+        <div className="rounded-3xl bg-foreground px-6 py-16 text-center sm:py-24 flex flex-col items-center">
           <h2 className="text-3xl font-bold text-background sm:text-4xl">
             See ComplyStep in action.
           </h2>
@@ -231,7 +278,7 @@ function Home() {
             Join UK financial, healthcare, legal and gambling brands using ComplyStep to launch faster, with less risk.
           </p>
           <Button asChild variant="hero" size="lg" className="mt-8">
-            <Link to="/signup">Book a Demo</Link>
+            <Link to="/contact">Contact Us</Link>
           </Button>
         </div>
       </section>

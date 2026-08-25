@@ -47,8 +47,8 @@ export function ComplianceMeter({ score, risk }: { score: number; risk: RiskLeve
         />
         <defs>
           <linearGradient id="meter-grad" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="oklch(0.44 0.21 265)" />
-            <stop offset="100%" stopColor="oklch(0.63 0.17 316)" />
+            <stop offset="0%" stopColor="oklch(0.45 0.24 264)" />
+            <stop offset="100%" stopColor="oklch(0.58 0.19 264)" />
           </linearGradient>
         </defs>
         <path

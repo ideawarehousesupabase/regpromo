@@ -18,6 +18,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as IndustriesRouteImport } from './routes/industries'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
@@ -75,6 +76,11 @@ const IndustriesRoute = IndustriesRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProductsRoute = ProductsRouteImport.update({
@@ -155,6 +161,7 @@ export interface FileRoutesByFullPath {
   '/forgot-password': typeof ForgotPasswordRoute
   '/industries': typeof IndustriesRoute
   '/login': typeof LoginRoute
+  '/pricing': typeof PricingRoute
   '/products': typeof ProductsRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -178,6 +185,7 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof ForgotPasswordRoute
   '/industries': typeof IndustriesRoute
   '/login': typeof LoginRoute
+  '/pricing': typeof PricingRoute
   '/products': typeof ProductsRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -203,6 +211,7 @@ export interface FileRoutesById {
   '/forgot-password': typeof ForgotPasswordRoute
   '/industries': typeof IndustriesRoute
   '/login': typeof LoginRoute
+  '/pricing': typeof PricingRoute
   '/products': typeof ProductsRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -229,6 +238,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/industries'
     | '/login'
+    | '/pricing'
     | '/products'
     | '/signup'
     | '/sitemap.xml'
@@ -252,6 +262,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/industries'
     | '/login'
+    | '/pricing'
     | '/products'
     | '/signup'
     | '/sitemap.xml'
@@ -276,6 +287,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/industries'
     | '/login'
+    | '/pricing'
     | '/products'
     | '/signup'
     | '/sitemap.xml'
@@ -301,6 +313,7 @@ export interface RootRouteChildren {
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   IndustriesRoute: typeof IndustriesRoute
   LoginRoute: typeof LoginRoute
+  PricingRoute: typeof PricingRoute
   ProductsRoute: typeof ProductsRoute
   SignupRoute: typeof SignupRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -370,6 +383,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/products': {
@@ -504,6 +524,7 @@ const rootRouteChildren: RootRouteChildren = {
   ForgotPasswordRoute: ForgotPasswordRoute,
   IndustriesRoute: IndustriesRoute,
   LoginRoute: LoginRoute,
+  PricingRoute: PricingRoute,
   ProductsRoute: ProductsRoute,
   SignupRoute: SignupRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,

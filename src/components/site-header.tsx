@@ -1,18 +1,22 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import { Logo } from "./logo";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/hooks/use-session";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const links = [
   { to: "/", label: "Home" },
   { to: "/about", label: "About Us" },
-  { to: "/products", label: "Products" },
+  { to: "/products", label: "Product" },
   { to: "/industries", label: "Industries" },
-  { to: "/casestudy", label: "Case Study" },
-  { to: "/blog", label: "Blog" },
-  { to: "/contact", label: "Contact" },
+  { to: "/pricing", label: "Pricing" },
 ] as const;
 
 export function SiteHeader() {
@@ -36,12 +40,31 @@ export function SiteHeader() {
               {l.label}
             </Link>
           ))}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+                Insights <ChevronDown className="size-4" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem asChild>
+                <Link to="/blog" className="cursor-pointer">
+                  Blog
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/casestudy" className="cursor-pointer">
+                  Case Studies
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
           {user ? (
             <Button asChild variant="hero" size="sm">
-              <Link to="/dashboard">Go to dashboard</Link>
+              <Link to="/dashboard">Dashboard</Link>
             </Button>
           ) : (
             <>
@@ -77,16 +100,30 @@ export function SiteHeader() {
                 {l.label}
               </Link>
             ))}
+            <Link
+              to="/blog"
+              onClick={() => setOpen(false)}
+              className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
+            >
+              Blog
+            </Link>
+            <Link
+              to="/casestudy"
+              onClick={() => setOpen(false)}
+              className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
+            >
+              Case Studies
+            </Link>
           </nav>
-          <div className="mt-3 flex gap-2">
+          <div className="mt-4 flex flex-col gap-2">
             {user ? (
-              <Button asChild variant="hero" className="flex-1">
+              <Button asChild variant="hero" className="w-full">
                 <Link to="/dashboard" onClick={() => setOpen(false)}>
                   Dashboard
                 </Link>
               </Button>
             ) : (
-              <>
+              <div className="flex gap-2">
                 <Button asChild variant="outline" className="flex-1">
                   <Link to="/login" onClick={() => setOpen(false)}>
                     Log in
@@ -97,7 +134,7 @@ export function SiteHeader() {
                     Start free
                   </Link>
                 </Button>
-              </>
+              </div>
             )}
           </div>
         </div>
