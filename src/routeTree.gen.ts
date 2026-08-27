@@ -19,9 +19,13 @@ import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as IndustriesRouteImport } from './routes/industries'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ProductsRouteImport } from './routes/products'
+import { Route as RegulatoryComplianceRouteImport } from './routes/regulatory-compliance'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as SitemapRouteImport } from './routes/sitemap'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as VerifyEmailRouteImport } from './routes/verify-email'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as DashboardIntegrationsRouteImport } from './routes/dashboard.integrations'
@@ -83,9 +87,19 @@ const PricingRoute = PricingRouteImport.update({
   path: '/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProductsRoute = ProductsRouteImport.update({
   id: '/products',
   path: '/products',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegulatoryComplianceRoute = RegulatoryComplianceRouteImport.update({
+  id: '/regulatory-compliance',
+  path: '/regulatory-compliance',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SignupRoute = SignupRouteImport.update({
@@ -93,9 +107,19 @@ const SignupRoute = SignupRouteImport.update({
   path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SitemapRoute = SitemapRouteImport.update({
+  id: '/sitemap',
+  path: '/sitemap',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const VerifyEmailRoute = VerifyEmailRouteImport.update({
@@ -162,9 +186,13 @@ export interface FileRoutesByFullPath {
   '/industries': typeof IndustriesRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
   '/products': typeof ProductsRoute
+  '/regulatory-compliance': typeof RegulatoryComplianceRoute
   '/signup': typeof SignupRoute
+  '/sitemap': typeof SitemapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms': typeof TermsRoute
   '/verify-email': typeof VerifyEmailRoute
   '/dashboard/integrations': typeof DashboardIntegrationsRoute
   '/dashboard/notifications': typeof DashboardNotificationsRoute
@@ -186,9 +214,13 @@ export interface FileRoutesByTo {
   '/industries': typeof IndustriesRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
   '/products': typeof ProductsRoute
+  '/regulatory-compliance': typeof RegulatoryComplianceRoute
   '/signup': typeof SignupRoute
+  '/sitemap': typeof SitemapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms': typeof TermsRoute
   '/verify-email': typeof VerifyEmailRoute
   '/dashboard/integrations': typeof DashboardIntegrationsRoute
   '/dashboard/notifications': typeof DashboardNotificationsRoute
@@ -212,9 +244,13 @@ export interface FileRoutesById {
   '/industries': typeof IndustriesRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
   '/products': typeof ProductsRoute
+  '/regulatory-compliance': typeof RegulatoryComplianceRoute
   '/signup': typeof SignupRoute
+  '/sitemap': typeof SitemapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms': typeof TermsRoute
   '/verify-email': typeof VerifyEmailRoute
   '/dashboard/integrations': typeof DashboardIntegrationsRoute
   '/dashboard/notifications': typeof DashboardNotificationsRoute
@@ -239,9 +275,13 @@ export interface FileRouteTypes {
     | '/industries'
     | '/login'
     | '/pricing'
+    | '/privacy'
     | '/products'
+    | '/regulatory-compliance'
     | '/signup'
+    | '/sitemap'
     | '/sitemap.xml'
+    | '/terms'
     | '/verify-email'
     | '/dashboard/integrations'
     | '/dashboard/notifications'
@@ -263,9 +303,13 @@ export interface FileRouteTypes {
     | '/industries'
     | '/login'
     | '/pricing'
+    | '/privacy'
     | '/products'
+    | '/regulatory-compliance'
     | '/signup'
+    | '/sitemap'
     | '/sitemap.xml'
+    | '/terms'
     | '/verify-email'
     | '/dashboard/integrations'
     | '/dashboard/notifications'
@@ -288,9 +332,13 @@ export interface FileRouteTypes {
     | '/industries'
     | '/login'
     | '/pricing'
+    | '/privacy'
     | '/products'
+    | '/regulatory-compliance'
     | '/signup'
+    | '/sitemap'
     | '/sitemap.xml'
+    | '/terms'
     | '/verify-email'
     | '/dashboard/integrations'
     | '/dashboard/notifications'
@@ -314,9 +362,13 @@ export interface RootRouteChildren {
   IndustriesRoute: typeof IndustriesRoute
   LoginRoute: typeof LoginRoute
   PricingRoute: typeof PricingRoute
+  PrivacyRoute: typeof PrivacyRoute
   ProductsRoute: typeof ProductsRoute
+  RegulatoryComplianceRoute: typeof RegulatoryComplianceRoute
   SignupRoute: typeof SignupRoute
+  SitemapRoute: typeof SitemapRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TermsRoute: typeof TermsRoute
   VerifyEmailRoute: typeof VerifyEmailRoute
 }
 
@@ -392,11 +444,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PricingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/products': {
       id: '/products'
       path: '/products'
       fullPath: '/products'
       preLoaderRoute: typeof ProductsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/regulatory-compliance': {
+      id: '/regulatory-compliance'
+      path: '/regulatory-compliance'
+      fullPath: '/regulatory-compliance'
+      preLoaderRoute: typeof RegulatoryComplianceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/signup': {
@@ -406,11 +472,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sitemap': {
+      id: '/sitemap'
+      path: '/sitemap'
+      fullPath: '/sitemap'
+      preLoaderRoute: typeof SitemapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/verify-email': {
@@ -525,9 +605,13 @@ const rootRouteChildren: RootRouteChildren = {
   IndustriesRoute: IndustriesRoute,
   LoginRoute: LoginRoute,
   PricingRoute: PricingRoute,
+  PrivacyRoute: PrivacyRoute,
   ProductsRoute: ProductsRoute,
+  RegulatoryComplianceRoute: RegulatoryComplianceRoute,
   SignupRoute: SignupRoute,
+  SitemapRoute: SitemapRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TermsRoute: TermsRoute,
   VerifyEmailRoute: VerifyEmailRoute,
 }
 export const routeTree = rootRouteImport

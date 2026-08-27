@@ -72,7 +72,7 @@ export function SiteHeader() {
                 <Link to="/login">Log in</Link>
               </Button>
               <Button asChild variant="hero" size="sm">
-                <Link to="/signup">Start free</Link>
+                <Link to="/signup">Free trial</Link>
               </Button>
             </>
           )}
@@ -131,7 +131,7 @@ export function SiteHeader() {
                 </Button>
                 <Button asChild variant="hero" className="flex-1">
                   <Link to="/signup" onClick={() => setOpen(false)}>
-                    Start free
+                    Free trial
                   </Link>
                 </Button>
               </div>

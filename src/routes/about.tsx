@@ -88,7 +88,7 @@ function About() {
         </div>
 
         {/* Founder */}
-        <div className="mt-20 rounded-3xl border border-border/70 bg-card p-8 sm:p-12">
+        <div id="founder-section" className="mt-20 rounded-3xl border border-border/70 bg-card p-8 sm:p-12">
           <span className="inline-flex items-center gap-2 text-sm font-semibold tracking-wide text-primary uppercase">
             <span className="size-1.5 rounded-full bg-primary" /> Founder
           </span>

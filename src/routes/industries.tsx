@@ -26,21 +26,25 @@ function Industries() {
           {[
             {
               title: "Financial Advisors & Wealth Managers",
+              id: "seg-finance",
               icon: BadgePoundSterling,
               desc: "Automated review against FCA Consumer Duty for every PPC, social and web promotion.",
             },
             {
               title: "Private Healthcare & Aesthetics",
+              id: "seg-healthcare",
               icon: Stethoscope,
               desc: "Screening for CAP and ASA rules on medical claims and dynamic creative.",
             },
             {
               title: "Legal Services",
+              id: "seg-legal",
               icon: Scale,
               desc: "Audit-ready promotional records that satisfy consumer-protection codes.",
             },
             {
               title: "Gambling & Affiliate Networks",
+              id: "seg-gambling",
               icon: Dice5,
               desc: "Real-time tracking to prevent unauthorised affiliate promotional claims.",
             },
@@ -55,7 +59,7 @@ function Industries() {
               desc: "Centralised compliance tracking across multi-site regional teams.",
             },
           ].map((industry) => (
-            <Card key={industry.title} className="group border-border/70 transition-shadow hover:shadow-lg">
+            <Card key={industry.title} id={industry.id} className="group border-border/70 transition-shadow hover:shadow-lg">
               <CardContent className="p-8">
                 <industry.icon className="mb-4 size-6 text-primary" />
                 <h3 className="font-display text-lg font-bold">{industry.title}</h3>

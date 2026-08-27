@@ -32,6 +32,8 @@ export function SiteFooter() {
             <li><Link to="/about" hash="founder-section" className="hover:text-foreground">Founder</Link></li>
             <li><Link to="/blog" className="hover:text-foreground">Blog</Link></li>
             <li><Link to="/casestudy" className="hover:text-foreground">Case Studies</Link></li>
+            <li><Link to="/contact" className="hover:text-foreground">Contact Us</Link></li>
+            <li><Link to="/sitemap" className="hover:text-foreground">Sitemap</Link></li>
           </ul>
         </div>
 
@@ -58,7 +60,6 @@ export function SiteFooter() {
                 <Instagram className="h-4 w-4" /> Instagram
               </a>
             </li>
-            <li><Link to="/contact" className="hover:text-foreground pt-2 inline-block">Contact Us</Link></li>
           </ul>
         </div>
       </div>
@@ -68,9 +69,9 @@ export function SiteFooter() {
           © {new Date().getFullYear()} ComplyStep · London, UK · Founded by Janki Rathod
         </p>
         <div className="flex gap-4 text-xs text-muted-foreground">
-          <Link to="/" className="hover:text-foreground">Privacy Policy</Link>
-          <Link to="/" className="hover:text-foreground">Terms of Service</Link>
-          <Link to="/" className="hover:text-foreground">Regulatory Compliance</Link>
+          <Link to="/privacy" className="hover:text-foreground">Privacy Policy</Link>
+          <Link to="/terms" className="hover:text-foreground">Terms of Service</Link>
+          <Link to="/regulatory-compliance" className="hover:text-foreground">Regulatory Compliance</Link>
         </div>
       </div>
     </footer>
