@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHero, PublicLayout } from "@/components/public-layout";
+import { ScreenshotGallery } from "@/components/screenshot-gallery";
 import { Brain, RefreshCw, TrendingUp } from "lucide-react";
 
 export const Route = createFileRoute("/products")({
@@ -69,6 +70,8 @@ function Product() {
           </div>
         </div>
       </section>
+
+      <ScreenshotGallery />
     </PublicLayout>
   );
 }

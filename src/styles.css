@@ -168,6 +168,10 @@
   box-shadow: var(--shadow-elevated);
 }
 
+body.lightbox-open .site-header {
+  display: none;
+}
+
 @utility grid-backdrop {
   background-image:
     radial-gradient(60% 50% at 50% 0%, color-mix(in oklab, var(--primary) 18%, transparent), transparent 70%),
