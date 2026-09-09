@@ -6,7 +6,7 @@ export function Logo({ inverted = false }: { inverted?: boolean }) {
       <img
         src="/ComplyStep.png"
         alt="ComplyStep"
-        className="h-10 w-auto py-1"
+        className="h-12 md:h-14 w-auto py-1"
       />
     </Link>
   );

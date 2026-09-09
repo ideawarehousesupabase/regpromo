@@ -33,7 +33,7 @@ function Product() {
               </p>
             </div>
             <div className="flex-1 overflow-hidden rounded-2xl border border-border/60 bg-card shadow-elevated">
-              <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?fm=jpg&q=60&w=900&auto=format&fit=crop" alt="AI regulatory knowledge graph" className="aspect-[4/3] w-full object-cover" />
+              <img src="/screenshots/feature-1.png" alt="AI regulatory knowledge graph" className="aspect-[4/3] w-full object-cover" />
             </div>
           </div>
 
@@ -49,7 +49,7 @@ function Product() {
               </p>
             </div>
             <div className="flex-1 overflow-hidden rounded-2xl border border-border/60 bg-card shadow-elevated">
-              <img src="https://images.unsplash.com/photo-1518186285589-2f7649de83e0?fm=jpg&q=60&w=900&auto=format&fit=crop" alt="Full lifecycle compliance coverage" className="aspect-[4/3] w-full object-cover" />
+              <img src="/screenshots/feature-2.png" alt="Full lifecycle compliance coverage" className="aspect-[4/3] w-full object-cover" />
             </div>
           </div>
 
@@ -65,7 +65,7 @@ function Product() {
               </p>
             </div>
             <div className="flex-1 overflow-hidden rounded-2xl border border-border/60 bg-card shadow-elevated">
-              <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?fm=jpg&q=60&w=900&auto=format&fit=crop" alt="Compliance driving growth and performance" className="aspect-[4/3] w-full object-cover" />
+              <img src="/screenshots/feature-3.png" alt="Compliance driving growth and performance" className="aspect-[4/3] w-full object-cover" />
             </div>
           </div>
         </div>
