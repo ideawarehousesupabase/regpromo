@@ -23,7 +23,7 @@ function Product() {
         <div className="grid gap-12 md:gap-16">
           {/* Pillar 1 */}
           <div className="flex flex-col md:flex-row items-center gap-8 md:gap-16">
-            <div className="flex-1 space-y-4">
+            <div className="w-full md:flex-1 space-y-4">
               <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
                 <Brain className="h-6 w-6" />
               </div>
@@ -32,14 +32,14 @@ function Product() {
                 Not a generic AI checker. We provide a sector-specific regulatory knowledge graph with explainable, multi-agent AI reasoning tailored to FCA, ASA, MHRA, and CAP Code rules.
               </p>
             </div>
-            <div className="flex-1 overflow-hidden rounded-2xl border border-border/60 bg-card shadow-elevated flex items-center justify-center">
-              <img src="/screenshots/feature-1.png" alt="AI regulatory knowledge graph" className="w-full h-auto object-contain" />
+            <div className="w-full md:flex-1 overflow-hidden rounded-2xl border border-border/60 bg-card shadow-elevated flex items-center justify-center">
+              <img src="/screenshots/feature-1.png" alt="AI regulatory knowledge graph" className="w-full h-auto block object-contain" />
             </div>
           </div>
 
           {/* Pillar 2 */}
           <div className="flex flex-col md:flex-row-reverse items-center gap-8 md:gap-16">
-            <div className="flex-1 space-y-4">
+            <div className="w-full md:flex-1 space-y-4">
               <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
                 <RefreshCw className="h-6 w-6" />
               </div>
@@ -48,14 +48,14 @@ function Product() {
                 The only platform covering pre-publication review, approval workflow, post-publication live monitoring, affiliate surveillance, audit evidence, and performance analytics all together.
               </p>
             </div>
-            <div className="flex-1 overflow-hidden rounded-2xl border border-border/60 bg-card shadow-elevated flex items-center justify-center">
-              <img src="/screenshots/feature-2.png" alt="Full lifecycle compliance coverage" className="w-full h-auto object-contain" />
+            <div className="w-full md:flex-1 overflow-hidden rounded-2xl border border-border/60 bg-card shadow-elevated flex items-center justify-center">
+              <img src="/screenshots/feature-2.png" alt="Full lifecycle compliance coverage" className="w-full h-auto block object-contain" />
             </div>
           </div>
 
           {/* Pillar 3 */}
           <div className="flex flex-col md:flex-row items-center gap-8 md:gap-16">
-            <div className="flex-1 space-y-4">
+            <div className="w-full md:flex-1 space-y-4">
               <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
                 <TrendingUp className="h-6 w-6" />
               </div>
@@ -64,8 +64,8 @@ function Product() {
                 Uniquely connects risk controls to commercial performance, turning compliance from a blocker into a competitive advantage for marketing teams.
               </p>
             </div>
-            <div className="flex-1 overflow-hidden rounded-2xl border border-border/60 bg-card shadow-elevated flex items-center justify-center">
-              <img src="/screenshots/feature-3.png" alt="Compliance driving growth and performance" className="w-full h-auto object-contain" />
+            <div className="w-full md:flex-1 overflow-hidden rounded-2xl border border-border/60 bg-card shadow-elevated flex items-center justify-center">
+              <img src="/screenshots/feature-3.png" alt="Compliance driving growth and performance" className="w-full h-auto block object-contain" />
             </div>
           </div>
         </div>
