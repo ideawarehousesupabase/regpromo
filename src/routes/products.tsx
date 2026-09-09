@@ -32,8 +32,8 @@ function Product() {
                 Not a generic AI checker. We provide a sector-specific regulatory knowledge graph with explainable, multi-agent AI reasoning tailored to FCA, ASA, MHRA, and CAP Code rules.
               </p>
             </div>
-            <div className="flex-1 overflow-hidden rounded-2xl border border-border/60 bg-card shadow-elevated">
-              <img src="/screenshots/feature-1.png" alt="AI regulatory knowledge graph" className="aspect-[4/3] w-full object-cover" />
+            <div className="flex-1 overflow-hidden rounded-2xl border border-border/60 bg-card shadow-elevated flex items-center justify-center">
+              <img src="/screenshots/feature-1.png" alt="AI regulatory knowledge graph" className="w-full h-auto object-contain" />
             </div>
           </div>
 
@@ -48,8 +48,8 @@ function Product() {
                 The only platform covering pre-publication review, approval workflow, post-publication live monitoring, affiliate surveillance, audit evidence, and performance analytics all together.
               </p>
             </div>
-            <div className="flex-1 overflow-hidden rounded-2xl border border-border/60 bg-card shadow-elevated">
-              <img src="/screenshots/feature-2.png" alt="Full lifecycle compliance coverage" className="aspect-[4/3] w-full object-cover" />
+            <div className="flex-1 overflow-hidden rounded-2xl border border-border/60 bg-card shadow-elevated flex items-center justify-center">
+              <img src="/screenshots/feature-2.png" alt="Full lifecycle compliance coverage" className="w-full h-auto object-contain" />
             </div>
           </div>
 
@@ -64,8 +64,8 @@ function Product() {
                 Uniquely connects risk controls to commercial performance, turning compliance from a blocker into a competitive advantage for marketing teams.
               </p>
             </div>
-            <div className="flex-1 overflow-hidden rounded-2xl border border-border/60 bg-card shadow-elevated">
-              <img src="/screenshots/feature-3.png" alt="Compliance driving growth and performance" className="aspect-[4/3] w-full object-cover" />
+            <div className="flex-1 overflow-hidden rounded-2xl border border-border/60 bg-card shadow-elevated flex items-center justify-center">
+              <img src="/screenshots/feature-3.png" alt="Compliance driving growth and performance" className="w-full h-auto object-contain" />
             </div>
           </div>
         </div>
