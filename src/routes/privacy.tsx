@@ -25,7 +25,7 @@ function PrivacyPolicy() {
             Privacy Policy
           </h1>
           <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
-            Last updated July 2026. ComplyStep is committed to protecting personal data in line with UK GDPR and the Data Protection Act 2018. We do not sell personal data, and it is shared only with sub-processors required to run the platform. Contact hello@regpromolens.co.uk to exercise your data rights.
+            Last updated July 2026. ComplyStep is committed to protecting personal data in line with UK GDPR and the Data Protection Act 2018. We do not sell personal data, and it is shared only with sub-processors required to run the platform. Email Contact@complystep.co.uk to exercise your data rights.
           </p>
           <div className="mt-8">
             <Button asChild variant="outline">

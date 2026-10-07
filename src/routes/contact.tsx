@@ -123,7 +123,7 @@ function Contact() {
           
           <div className="mt-8 space-y-6">
             {[
-              { icon: Mail, label: "Email", value: "hello@complystep.co.uk" },
+              { icon: Mail, label: "Email", value: "Contact@complystep.co.uk" },
               { icon: MapPin, label: "Location", value: "London, United Kingdom" },
               { icon: ShieldHalf, label: "Compliance", value: "UK GDPR · FCA-Aligned" },
             ].map((info) => (
